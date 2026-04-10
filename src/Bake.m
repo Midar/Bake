@@ -51,7 +51,7 @@ OF_APPLICATION_DELEGATE(Bake)
 	[self findRecipe];
 
 	@try {
-		recipe = [[Recipe alloc] init];
+		_recipe = [[Recipe alloc] init];
 	} @catch (OFOpenItemFailedException *e) {
 		[OFStdErr writeLine: @"Error: Could not find Recipe!"];
 		[OFApplication terminateWithStatus: 1];
@@ -69,14 +69,14 @@ OF_APPLICATION_DELEGATE(Bake)
 					    @"true",
 					    nil];
 
-	verbose = ([arguments containsObject: @"--verbose"] ||
+	_verbose = ([arguments containsObject: @"--_verbose"] ||
 	    [arguments containsObject: @"-v"]);
-	rebake = ([arguments containsObject: @"--rebake"] ||
+	_rebake = ([arguments containsObject: @"--rebake"] ||
 	    [arguments containsObject: @"-r"]);
 
 	dependencySolver = [[[DependencySolver alloc] init] autorelease];
 
-	enumerator = [[recipe targets] objectEnumerator];
+	enumerator = [[_recipe targets] objectEnumerator];
 	while ((target = [enumerator nextObject]) != nil)
 		[dependencySolver addTarget: target];
 
@@ -119,7 +119,7 @@ OF_APPLICATION_DELEGATE(Bake)
 
 			link = YES;
 
-			if (!verbose)
+			if (!_verbose)
 				[OFStdOut writeFormat: @"\r%@: %zd/%zd",
 						       [target name], i,
 						       [[target files] count]];
@@ -141,7 +141,7 @@ OF_APPLICATION_DELEGATE(Bake)
 
 			i++;
 
-			if (!verbose)
+			if (!_verbose)
 				[OFStdOut writeFormat: @"\r%@: %zd/%zd",
 						       [target name], i,
 						       [[target files] count]];
@@ -151,7 +151,7 @@ OF_APPLICATION_DELEGATE(Bake)
 		    ![fileManager fileExistsAtPath:
 		    [[ObjCCompiler sharedCompiler]
 		    outputFileForTarget: target]])) {
-			if (!verbose)
+			if (!_verbose)
 				[OFStdOut writeFormat:
 				    @"\r%@: %zd/%zd (linking)",
 				    [target name], i, [[target files] count]];
@@ -173,7 +173,7 @@ OF_APPLICATION_DELEGATE(Bake)
 				[OFApplication terminateWithStatus: 1];
 			}
 
-			if (!verbose)
+			if (!_verbose)
 				[OFStdOut writeFormat:
 				    @"\r%@: %zd/%zd (successful)\n",
 				    [target name], i, [[target files] count]];
@@ -228,7 +228,7 @@ OF_APPLICATION_DELEGATE(Bake)
 	OFString *objectFile;
 	OFDate *sourceDate, *objectDate;
 
-	if (rebake)
+	if (_rebake)
 		return YES;
 
 	compiler = [Compiler compilerForFile: file
@@ -249,6 +249,6 @@ OF_APPLICATION_DELEGATE(Bake)
 
 - (BOOL)verbose
 {
-	return verbose;
+	return _verbose;
 }
 @end

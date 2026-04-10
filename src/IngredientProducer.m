@@ -12,7 +12,7 @@
 		info = [OFDictionary
 		    dictionaryWithObject: [OFNumber numberWithInt: 1]
 				  forKey: @"version"];
-		ingredient = [[OFMutableDictionary alloc]
+		_ingredient = [[OFMutableDictionary alloc]
 		    initWithObject: info
 			    forKey: @"ingredient"];
 
@@ -27,7 +27,7 @@
 
 - (void)dealloc
 {
-	[ingredient release];
+	[_ingredient release];
 
 	[super dealloc];
 }
@@ -40,12 +40,12 @@
 	do {								\
 		id tmp;							\
 									\
-		if ((tmp = [ingredient objectForKey: array]) != nil)	\
+		if ((tmp = [_ingredient objectForKey: array]) != nil)	\
 			[tmp addObject: object];			\
 		else {							\
 			tmp = [OFMutableArray arrayWithObject: object];	\
-			[ingredient setObject: tmp			\
-				       forKey: array];			\
+			[_ingredient setObject: tmp			\
+					forKey: array];			\
 		}							\
 	} while(0);
 
@@ -62,8 +62,8 @@
 		ADD_TO_ARRAY(@"libs", [argument substringWithRange:
 		    OFMakeRange(2, [argument length] - 2)])
 	else if ([argument isEqual: @"-g"])
-		[ingredient setObject: [OFNumber numberWithBool: YES]
-			       forKey: @"debug"];
+		[_ingredient setObject: [OFNumber numberWithBool: YES]
+				forKey: @"debug"];
 	else
 		ADD_TO_ARRAY(@"objcflags", argument)
 
@@ -72,6 +72,6 @@
 
 - (OFDictionary*)ingredient
 {
-	return ingredient;
+	return _ingredient;
 }
 @end

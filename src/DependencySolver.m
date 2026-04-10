@@ -10,8 +10,8 @@
 	self = [super init];
 
 	@try {
-		nodes = [[OFMutableDictionary alloc] init];
-		targetOrder = [[OFMutableArray alloc] init];
+		_nodes = [[OFMutableDictionary alloc] init];
+		_targetOrder = [[OFMutableArray alloc] init];
 	} @catch (id e) {
 		[self release];
 		@throw e;
@@ -22,8 +22,8 @@
 
 - (void)dealloc
 {
-	[nodes release];
-	[targetOrder release];
+	[_nodes release];
+	[_targetOrder release];
 
 	[super dealloc];
 }
@@ -35,8 +35,8 @@
 
 	node = [[[DependencyNode alloc] initWithTarget: target] autorelease];
 
-	[nodes setObject: node
-		  forKey: [target name]];
+	[_nodes setObject: node
+		   forKey: [target name]];
 
 	objc_autoreleasePoolPop(pool);
 }
@@ -53,7 +53,7 @@
 	while ((dependencyName = [enumerator nextObject]) != nil) {
 		DependencyNode *dependency;
 
-		if ((dependency = [nodes objectForKey: dependencyName]) == nil)
+		if ((dependency = [_nodes objectForKey: dependencyName]) == nil)
 			@throw [MissingDependencyException
 			    exceptionWithDependencyName: dependencyName];
 
@@ -61,7 +61,7 @@
 			[self solveDependenciesForNode: dependency];
 	}
 
-	[targetOrder addObject: [node target]];
+	[_targetOrder addObject: [node target]];
 	[node setInTargetOrder: YES];
 
 	objc_autoreleasePoolPop(pool);
@@ -70,7 +70,7 @@
 - (void)solve
 {
 	void *pool = objc_autoreleasePoolPush();
-	OFEnumerator *enumerator = [nodes objectEnumerator];
+	OFEnumerator *enumerator = [_nodes objectEnumerator];
 	DependencyNode *node;
 
 	while ((node = [enumerator nextObject]) != nil)
@@ -82,6 +82,6 @@
 
 - (OFArray*)targetOrder
 {
-	return [[targetOrder copy] autorelease];
+	return [[_targetOrder copy] autorelease];
 }
 @end

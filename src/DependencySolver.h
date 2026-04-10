@@ -5,8 +5,8 @@
 
 @interface DependencySolver: OFObject
 {
-	OFMutableDictionary *nodes;
-	OFMutableArray *targetOrder;
+	OFMutableDictionary *_nodes;
+	OFMutableArray *_targetOrder;
 }
 
 - (void)addTarget: (Target*)target;

@@ -2,13 +2,13 @@
 
 @interface Target: Buildinfo
 {
-	OFString *name;
-	OFMutableArray *files;
-	OFMutableArray *dependencies;
-	BOOL sharedLib, staticLib;
-	unsigned sharedLibMajor, sharedLibMinor;
-	BOOL install;
-	OFDictionary *installHeaders;
+	OFString *_name;
+	OFMutableArray *_files;
+	OFMutableArray *_dependencies;
+	BOOL _sharedLib, _staticLib;
+	unsigned _sharedLibMajor, _sharedLibMinor;
+	BOOL _install;
+	OFDictionary *_installHeaders;
 }
 
 - initWithName: (OFString*)name;

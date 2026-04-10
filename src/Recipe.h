@@ -2,7 +2,7 @@
 
 @interface Recipe: Buildinfo
 {
-	OFMutableDictionary *targets;
+	OFMutableDictionary *_targets;
 }
 
 - (OFDictionary*)targets;

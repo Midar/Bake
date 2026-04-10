@@ -2,7 +2,7 @@
 
 @interface MissingIngredientException: OFException
 {
-	OFString *ingredientName;
+	OFString *_ingredientName;
 }
 
 + exceptionWithIngredientName: (OFString*)ingredientName;

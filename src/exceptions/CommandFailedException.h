@@ -2,7 +2,7 @@
 
 @interface CommandFailedException: OFException
 {
-	OFString *command;
+	OFString *_command;
 }
 
 + exceptionWithCommand: (OFString*)command;

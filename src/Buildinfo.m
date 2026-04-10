@@ -10,15 +10,15 @@
 	    [tmp isKindOfClass: [kind class]])		\
 		var = [tmp keep];
 
-	KEEP_IF_KIND_IS(ingredients, @"ingredients", retain, OFArray)
-	debug = [[info objectForKey: @"debug"] boolValue];
-	KEEP_IF_KIND_IS(objC, @"objc", copy, OFString)
-	KEEP_IF_KIND_IS(objCFlags, @"objcflags", mutableCopy, OFArray)
-	KEEP_IF_KIND_IS(includeDirs, @"includedirs", mutableCopy, OFArray)
-	KEEP_IF_KIND_IS(defines, @"defines", mutableCopy, OFArray)
-	KEEP_IF_KIND_IS(libs, @"libs", mutableCopy, OFArray)
-	KEEP_IF_KIND_IS(libDirs, @"libdirs", mutableCopy, OFArray)
-	KEEP_IF_KIND_IS(conditionals, @"conditional", mutableCopy, OFArray)
+	KEEP_IF_KIND_IS(_ingredients, @"ingredients", retain, OFArray)
+	_debug = [[info objectForKey: @"debug"] boolValue];
+	KEEP_IF_KIND_IS(_objC, @"objc", copy, OFString)
+	KEEP_IF_KIND_IS(_objCFlags, @"objcflags", mutableCopy, OFArray)
+	KEEP_IF_KIND_IS(_includeDirs, @"includedirs", mutableCopy, OFArray)
+	KEEP_IF_KIND_IS(_defines, @"defines", mutableCopy, OFArray)
+	KEEP_IF_KIND_IS(_libs, @"libs", mutableCopy, OFArray)
+	KEEP_IF_KIND_IS(_libDirs, @"libdirs", mutableCopy, OFArray)
+	KEEP_IF_KIND_IS(_conditionals, @"conditional", mutableCopy, OFArray)
 
 #undef KEEP_IF_KIND_IS
 }
@@ -29,20 +29,20 @@
 
 #define INHERIT_ARRAY(var)					\
 	if ((tmp = [info var]) != nil) {			\
-		if (var != nil)					\
-			[var insertObjectsFromArray: tmp	\
-					    atIndex: 0];	\
+		if (_##var != nil)				\
+			[_##var insertObjectsFromArray: tmp	\
+					       atIndex: 0];	\
 		else						\
-			var = [tmp mutableCopy];		\
+			_##var = [tmp mutableCopy];		\
 	}
 
 	INHERIT_ARRAY(ingredients)
 
-	debug |= [info debug];
+	_debug |= [info debug];
 
 	if ((tmp = [info objC]) != nil) {
-		[objC release];
-		objC = [tmp copy];
+		[_objC release];
+		_objC = [tmp copy];
 	}
 
 	INHERIT_ARRAY(objCFlags)
@@ -57,60 +57,60 @@
 
 - (void)dealloc
 {
-	[ingredients release];
-	[objC release];
-	[objCFlags release];
-	[includeDirs release];
-	[defines release];
-	[libs release];
-	[libDirs release];
-	[conditionals release];
+	[_ingredients release];
+	[_objC release];
+	[_objCFlags release];
+	[_includeDirs release];
+	[_defines release];
+	[_libs release];
+	[_libDirs release];
+	[_conditionals release];
 
 	[super dealloc];
 }
 
 - (OFArray*)ingredients
 {
-	return ingredients;
+	return _ingredients;
 }
 
 - (BOOL)debug
 {
-	return debug;
+	return _debug;
 }
 
 - (OFString*)objC
 {
-	return objC;
+	return _objC;
 }
 
 - (OFArray*)objCFlags
 {
-	return objCFlags;
+	return _objCFlags;
 }
 
 - (OFArray*)includeDirs
 {
-	return includeDirs;
+	return _includeDirs;
 }
 
 - (OFArray*)defines
 {
-	return defines;
+	return _defines;
 }
 
 - (OFArray*)libs
 {
-	return libs;
+	return _libs;
 }
 
 - (OFArray*)libDirs
 {
-	return libDirs;
+	return _libDirs;
 }
 
 - (OFArray*)conditionals
 {
-	return conditionals;
+	return _conditionals;
 }
 @end

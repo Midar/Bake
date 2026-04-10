@@ -2,7 +2,7 @@
 
 @interface ObjCCompiler: Compiler
 {
-	OFString *program;
+	OFString *_program;
 }
 
 + sharedCompiler;

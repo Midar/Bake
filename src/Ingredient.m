@@ -92,13 +92,13 @@ static OFMutableDictionary *ingredients = nil;
 
 - (void)dealloc
 {
-	[name release];
+	[_name release];
 
 	[super dealloc];
 }
 
 - (OFString*)name
 {
-	return name;
+	return _name;
 }
 @end

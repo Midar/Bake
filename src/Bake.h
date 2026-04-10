@@ -5,8 +5,8 @@
 
 @interface Bake: OFObject <OFApplicationDelegate>
 {
-	Recipe *recipe;
-	BOOL verbose, rebake;
+	Recipe *_recipe;
+	BOOL _verbose, _rebake;
 }
 
 - (void)findRecipe;

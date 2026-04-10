@@ -7,12 +7,12 @@
 	OF_INVALID_INIT_METHOD
 }
 
-- initWithName: (OFString*)name_
+- initWithName: (OFString*)name
 {
 	self = [super init];
 
 	@try {
-		name = [name_ copy];
+		_name = [name copy];
 	} @catch (id e) {
 		[self release];
 		@throw e;
@@ -23,7 +23,7 @@
 
 - (void)dealloc
 {
-	[name release];
+	[_name release];
 
 	[super dealloc];
 }
@@ -31,18 +31,18 @@
 - (void)populateFiles: (id)fileList
 {
 	if ([fileList isKindOfClass: [OFArray class]]) {
-		if (files != nil)
-			[files addObjectsFromArray: fileList];
+		if (_files != nil)
+			[_files addObjectsFromArray: fileList];
 		else
-			files = [fileList mutableCopy];
+			_files = [fileList mutableCopy];
 	} else if ([fileList isKindOfClass: [OFDictionary class]]) {
 		void *pool = objc_autoreleasePoolPush();
 		OFEnumerator *keyEnumerator, *objectEnumerator;
 		OFString *dir;
 		OFArray *filesInDir;
 
-		if (files == nil)
-			files = [[OFMutableArray alloc] init];
+		if (_files == nil)
+			_files = [[OFMutableArray alloc] init];
 
 		keyEnumerator = [fileList keyEnumerator];
 		objectEnumerator = [fileList objectEnumerator];
@@ -57,14 +57,14 @@
 				continue;
 
 			if ([dir isEqual: @""]) {
-				[files addObjectsFromArray: filesInDir];
+				[_files addObjectsFromArray: filesInDir];
 				continue;
 			}
 
 			fileEnumerator = [filesInDir objectEnumerator];
 
 			while ((file = [fileEnumerator nextObject]) != nil)
-				[files addObject:
+				[_files addObject:
 				    [dir stringByAppendingPathComponent: file]];
 		}
 
@@ -83,13 +83,13 @@
 
 	if ((tmp = [info objectForKey: @"dependencies"]) != nil &&
 	    [tmp isKindOfClass: [OFArray class]])
-		dependencies = [tmp mutableCopy];
+		_dependencies = [tmp mutableCopy];
 }
 
 - (void)resolveConditionals: (OFSet*)conditions
 {
 	void *pool = objc_autoreleasePoolPush();
-	OFEnumerator *enumerator = [conditionals objectEnumerator];
+	OFEnumerator *enumerator = [_conditionals objectEnumerator];
 	OFDictionary *dict;
 
 	while ((dict = [enumerator nextObject]) != nil) {
@@ -123,7 +123,7 @@
 - (void)addIngredients
 {
 	void *pool = objc_autoreleasePoolPush();
-	OFEnumerator *enumerator = [ingredients objectEnumerator];
+	OFEnumerator *enumerator = [_ingredients objectEnumerator];
 	OFString *ingredientName;
 
 	while ((ingredientName = [enumerator nextObject]) != nil)
@@ -135,16 +135,16 @@
 
 - (OFString*)name
 {
-	return name;
+	return _name;
 }
 
 - (OFArray*)files
 {
-	return files;
+	return _files;
 }
 
 - (OFArray*)dependencies
 {
-	return dependencies;
+	return _dependencies;
 }
 @end

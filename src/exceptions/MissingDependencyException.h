@@ -2,10 +2,10 @@
 
 @interface MissingDependencyException: OFException
 {
-	OFString *dependencyName;
+	OFString *_dependencyName;
 }
 
 + exceptionWithDependencyName: (OFString*)dependencyName;
--  initWithDependencyName: (OFString*)dependencyName;
+- initWithDependencyName: (OFString*)dependencyName;
 - (OFString*)dependencyName;
 @end

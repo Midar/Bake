@@ -2,7 +2,7 @@
 
 @interface Ingredient: Buildinfo
 {
-	OFString *name;
+	OFString *_name;
 }
 
 + ingredientWithName: (OFString*)name;

@@ -4,9 +4,9 @@
 
 @interface DependencyNode: OFObject
 {
-	Target *target;
-	unsigned visited;
-	BOOL inTargetOrder;
+	Target *_target;
+	unsigned _visited;
+	BOOL _inTargetOrder;
 }
 
 - initWithTarget: (Target*)target;

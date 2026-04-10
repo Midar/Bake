@@ -2,7 +2,7 @@
 
 @interface IngredientProducer: OFObject
 {
-	OFMutableDictionary *ingredient;
+	OFMutableDictionary *_ingredient;
 }
 
 - (void)parseArgument: (OFString*)argument;

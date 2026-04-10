@@ -19,13 +19,7 @@ static ObjCCompiler *sharedCompiler = nil;
 {
 	self = [super init];
 
-	@try {
-		// FIXME!
-		program = @"clang";
-	} @catch (id e) {
-		[self release];
-		@throw e;
-	}
+	_program = @"clang";
 
 	return self;
 }
@@ -35,7 +29,7 @@ static ObjCCompiler *sharedCompiler = nil;
 {
 	OFFileManager *fileManager = [OFFileManager defaultManager];
 	OFMutableString *command = [OFMutableString stringWithFormat: @"%@ -c",
-								      program];
+								      _program];
 	OFString *objectFile = [self objectFileForSource: file
 						  target: target];
 	OFString *dir = [objectFile stringByDeletingLastPathComponent];
@@ -79,7 +73,7 @@ static ObjCCompiler *sharedCompiler = nil;
 	extraFlags: (OFString*)extraFlags
 {
 	OFFileManager *fileManager = [OFFileManager defaultManager];
-	OFMutableString *command = [OFMutableString stringWithString: program];
+	OFMutableString *command = [OFMutableString stringWithString: _program];
 	OFString *outputFile = [self outputFileForTarget: target];
 	OFString *file, *dir = [outputFile stringByDeletingLastPathComponent];
 	OFEnumerator *enumerator;

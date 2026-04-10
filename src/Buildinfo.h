@@ -2,11 +2,11 @@
 
 @interface Buildinfo: OFObject
 {
-	OFMutableArray *ingredients;
-	BOOL debug;
-	OFString *objC;
-	OFMutableArray *objCFlags, *includeDirs, *defines, *libs, *libDirs;
-	OFMutableArray *conditionals;
+	OFMutableArray *_ingredients;
+	BOOL _debug;
+	OFString *_objC;
+	OFMutableArray *_objCFlags, *_includeDirs, *_defines, *_libs, *_libDirs;
+	OFMutableArray *_conditionals;
 }
 
 - (void)populateFromDictionary: (OFDictionary*)info;

@@ -37,7 +37,7 @@
 			OFDictionary *info;
 			Target *target;
 
-			targets = [[OFMutableDictionary alloc] init];
+			_targets = [[OFMutableDictionary alloc] init];
 			keyEnumerator = [tmp keyEnumerator];
 			objectEnumerator = [tmp objectEnumerator];
 
@@ -51,8 +51,8 @@
 				[target populateFromDictionary: info];
 				[target inheritBuildinfo: self];
 
-				[targets setObject: target
-					    forKey: name];
+				[_targets setObject: target
+					     forKey: name];
 			}
 		}
 
@@ -67,13 +67,13 @@
 
 - (void)dealloc
 {
-	[targets release];
+	[_targets release];
 
 	[super dealloc];
 }
 
 - (OFDictionary*)targets
 {
-	return targets;
+	return _targets;
 }
 @end

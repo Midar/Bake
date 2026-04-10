@@ -7,12 +7,12 @@
 	    autorelease];
 }
 
-- initWithDependencyName: (OFString*)dependencyName_
+- initWithDependencyName: (OFString*)dependencyName
 {
 	self = [super init];
 
 	@try {
-		dependencyName = [dependencyName_ copy];
+		_dependencyName = [dependencyName copy];
 	} @catch (id e) {
 		[self release];
 		@throw e;
@@ -28,13 +28,13 @@
 
 - (void)dealloc
 {
-	[dependencyName release];
+	[_dependencyName release];
 
 	[super dealloc];
 }
 
 - (OFString*)dependencyName
 {
-	return dependencyName;
+	return _dependencyName;
 }
 @end

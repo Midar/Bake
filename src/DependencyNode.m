@@ -3,38 +3,33 @@
 #import "CircularDependencyException.h"
 
 @implementation DependencyNode
-- initWithTarget: (Target*)target_
+- initWithTarget: (Target*)target
 {
 	self = [super init];
 
-	@try {
-		target = [target_ retain];
-	} @catch (id e) {
-		[self release];
-		@throw e;
-	}
+	_target = [target retain];
 
 	return self;
 }
 
 - (void)visit
 {
-	if (++visited > 1)
+	if (++_visited > 1)
 		@throw [CircularDependencyException exception];
 }
 
 - (Target*)target
 {
-	return target;
+	return _target;
 }
 
 - (BOOL)isInTargetOrder
 {
-	return inTargetOrder;
+	return _inTargetOrder;
 }
 
-- (void)setInTargetOrder: (BOOL)inTargetOrder_
+- (void)setInTargetOrder: (BOOL)inTargetOrder
 {
-	inTargetOrder = inTargetOrder_;
+	_inTargetOrder = inTargetOrder;
 }
 @end

@@ -7,12 +7,12 @@
 	    autorelease];
 }
 
--  initWithIngredientName: (OFString*)ingredientName_
+-  initWithIngredientName: (OFString*)ingredientName
 {
 	self = [super init];
 
 	@try {
-		ingredientName = [ingredientName_ copy];
+		_ingredientName = [ingredientName copy];
 	} @catch (id e) {
 		[self release];
 		@throw e;
@@ -28,13 +28,13 @@
 
 - (void)dealloc
 {
-	[ingredientName release];
+	[_ingredientName release];
 
 	[super dealloc];
 }
 
 - (OFString*)ingredientName
 {
-	return ingredientName;
+	return _ingredientName;
 }
 @end
