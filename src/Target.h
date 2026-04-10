@@ -11,10 +11,11 @@
 	OFDictionary *_installHeaders;
 }
 
+@property (readonly, copy, nonatomic) OFString *name;
+@property (readonly, copy, nonatomic) OFArray *files;
+@property (readonly, copy, nonatomic) OFArray *dependencies;
+
 - initWithName: (OFString*)name;
 - (void)resolveConditionals: (OFSet*)conditions;
 - (void)addIngredients;
-- (OFString*)name;
-- (OFArray*)files;
-- (OFArray*)dependencies;
 @end

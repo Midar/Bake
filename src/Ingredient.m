@@ -96,9 +96,4 @@ static OFMutableDictionary *ingredients = nil;
 
 	[super dealloc];
 }
-
-- (OFString*)name
-{
-	return _name;
-}
 @end

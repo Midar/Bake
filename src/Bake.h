@@ -9,8 +9,9 @@
 	bool _verbose, _rebake;
 }
 
+@property (readonly, nonatomic) bool verbose;
+
 - (void)findRecipe;
 - (bool)shouldRebuildFile: (OFString*)file
 		   target: (Target*)target;
-- (bool)verbose;
 @end

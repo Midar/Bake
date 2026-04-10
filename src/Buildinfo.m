@@ -1,6 +1,11 @@
 #import "Buildinfo.h"
 
 @implementation Buildinfo
+@synthesize ingredients = _ingredients, debug = _debug, objC = _objcC;
+@synthesize objCFlags = _objCFlags, includeDirs = _includeDirs;
+@synthesize defines = _defines, libs = _libs, libDirs = _libDirs;
+@synthesize conditionals = _conditionals;
+
 - (void)populateFromDictionary: (OFDictionary*)info
 {
 	id tmp;
@@ -67,50 +72,5 @@
 	[_conditionals release];
 
 	[super dealloc];
-}
-
-- (OFArray*)ingredients
-{
-	return _ingredients;
-}
-
-- (bool)debug
-{
-	return _debug;
-}
-
-- (OFString*)objC
-{
-	return _objC;
-}
-
-- (OFArray*)objCFlags
-{
-	return _objCFlags;
-}
-
-- (OFArray*)includeDirs
-{
-	return _includeDirs;
-}
-
-- (OFArray*)defines
-{
-	return _defines;
-}
-
-- (OFArray*)libs
-{
-	return _libs;
-}
-
-- (OFArray*)libDirs
-{
-	return _libDirs;
-}
-
-- (OFArray*)conditionals
-{
-	return _conditionals;
 }
 @end

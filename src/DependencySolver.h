@@ -9,7 +9,8 @@
 	OFMutableArray *_targetOrder;
 }
 
+@property (readonly, copy, nonatomic) OFArray *targetOrder;
+
 - (void)addTarget: (Target*)target;
 - (void)solve;
-- (OFArray*)targetOrder;
 @end

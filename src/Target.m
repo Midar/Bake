@@ -2,6 +2,8 @@
 #import "Ingredient.h"
 
 @implementation Target
+@synthesize name = _name;
+
 - init
 {
 	OF_INVALID_INIT_METHOD
@@ -119,18 +121,13 @@
 	objc_autoreleasePoolPop(pool);
 }
 
-- (OFString*)name
-{
-	return _name;
-}
-
 - (OFArray*)files
 {
-	return _files;
+	return [[_files copy] autorelease];
 }
 
 - (OFArray*)dependencies
 {
-	return _dependencies;
+	return [[_dependencies copy] autorelease];
 }
 @end

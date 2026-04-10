@@ -72,6 +72,6 @@
 
 - (OFDictionary*)ingredient
 {
-	return _ingredient;
+	return [[_ingredient copy] autorelease];
 }
 @end

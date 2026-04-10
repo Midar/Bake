@@ -5,6 +5,7 @@
 	OFMutableDictionary *_ingredient;
 }
 
+@property (readonly, copy, nonatomic) OFDictionary *ingredient;
+
 - (void)parseArgument: (OFString*)argument;
-- (OFDictionary*)ingredient;
 @end

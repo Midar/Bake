@@ -5,7 +5,8 @@
 	OFString *_command;
 }
 
+@property (readonly, copy, nonatomic) OFString *command;
+
 + exceptionWithCommand: (OFString*)command;
 - initWithCommand: (OFString*)command;
-- (OFString*)command;
 @end

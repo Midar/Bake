@@ -1,6 +1,8 @@
 #import "CommandFailedException.h"
 
 @implementation CommandFailedException
+@synthesize command = _command;
+
 + exceptionWithCommand: (OFString*)command
 {
 	return [[[self alloc] initWithCommand: command] autorelease];
@@ -30,10 +32,5 @@
 	[_command release];
 
 	[super dealloc];
-}
-
-- (OFString*)command
-{
-	return _command;
 }
 @end

@@ -3,6 +3,8 @@
 #import "WrongVersionException.h"
 
 @implementation Recipe
+@synthesize targets = _targets;
+
 - init
 {
 	self = [super init];
@@ -48,6 +50,8 @@
 				[_targets setObject: target
 					     forKey: name];
 			}
+
+			[_targets makeImmutable];
 		}
 
 		objc_autoreleasePoolPop(pool);
@@ -64,10 +68,5 @@
 	[_targets release];
 
 	[super dealloc];
-}
-
-- (OFDictionary*)targets
-{
-	return _targets;
 }
 @end

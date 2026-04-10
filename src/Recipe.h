@@ -5,5 +5,5 @@
 	OFMutableDictionary *_targets;
 }
 
-- (OFDictionary*)targets;
+@property (readonly, copy, nonatomic) OFDictionary *targets;
 @end

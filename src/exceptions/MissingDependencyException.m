@@ -1,6 +1,8 @@
 #import "MissingDependencyException.h"
 
 @implementation MissingDependencyException
+@synthesize dependencyName = _dependencyName;
+
 + exceptionWithDependencyName: (OFString*)dependencyName
 {
 	return [[[self alloc] initWithDependencyName: dependencyName]
@@ -31,10 +33,5 @@
 	[_dependencyName release];
 
 	[super dealloc];
-}
-
-- (OFString*)dependencyName
-{
-	return _dependencyName;
 }
 @end

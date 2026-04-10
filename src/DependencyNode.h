@@ -9,9 +9,9 @@
 	bool _inTargetOrder;
 }
 
+@property (readonly, retain, nonatomic) Target *target;
+@property (getter=isInTargetOrder, nonatomic) bool inTargetOrder;
+
 - initWithTarget: (Target*)target;
 - (void)visit;
-- (Target*)target;
-- (bool)isInTargetOrder;
-- (void)setInTargetOrder: (bool)inList;
 @end

@@ -14,6 +14,8 @@
 OF_APPLICATION_DELEGATE(Bake)
 
 @implementation Bake
+@synthesize verbose = _verbose;
+
 - (void)applicationDidFinishLaunching: (OFNotification *)notification
 {
 	OFFileManager *fileManager = [OFFileManager defaultManager];
@@ -231,10 +233,5 @@ OF_APPLICATION_DELEGATE(Bake)
 	    fileModificationDate];
 
 	return ([objectDate compare: sourceDate] == OFOrderedAscending);
-}
-
-- (bool)verbose
-{
-	return _verbose;
 }
 @end

@@ -3,6 +3,8 @@
 #import "CircularDependencyException.h"
 
 @implementation DependencyNode
+@synthesize target = _target, inTargetOrder = _inTargetOrder;
+
 - initWithTarget: (Target*)target
 {
 	self = [super init];
@@ -16,20 +18,5 @@
 {
 	if (++_visited > 1)
 		@throw [CircularDependencyException exception];
-}
-
-- (Target*)target
-{
-	return _target;
-}
-
-- (bool)isInTargetOrder
-{
-	return _inTargetOrder;
-}
-
-- (void)setInTargetOrder: (bool)inTargetOrder
-{
-	_inTargetOrder = inTargetOrder;
 }
 @end

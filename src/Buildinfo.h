@@ -9,15 +9,16 @@
 	OFMutableArray *_conditionals;
 }
 
+@property (readonly, copy, nonatomic) OFArray *ingredients;
+@property (readonly, nonatomic) bool debug;
+@property (readonly, copy, nonatomic) OFString *objC;
+@property (readonly, copy, nonatomic) OFArray *objCFlags;
+@property (readonly, copy, nonatomic) OFArray *includeDirs;
+@property (readonly, copy, nonatomic) OFArray *defines;
+@property (readonly, copy, nonatomic) OFArray *libs;
+@property (readonly, copy, nonatomic) OFArray *libDirs;
+@property (readonly, copy, nonatomic) OFArray *conditionals;
+
 - (void)populateFromDictionary: (OFDictionary*)info;
 - (void)inheritBuildinfo: (Buildinfo*)info;
-- (OFArray*)ingredients;
-- (bool)debug;
-- (OFString*)objC;
-- (OFArray*)objCFlags;
-- (OFArray*)includeDirs;
-- (OFArray*)defines;
-- (OFArray*)libs;
-- (OFArray*)libDirs;
-- (OFArray*)conditionals;
 @end

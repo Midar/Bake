@@ -1,6 +1,8 @@
 #import "MissingIngredientException.h"
 
 @implementation MissingIngredientException
+@synthesize ingredientName = _ingredientName;
+
 + exceptionWithIngredientName: (OFString*)ingredientName
 {
 	return [[[self alloc] initWithIngredientName: ingredientName]
@@ -31,10 +33,5 @@
 	[_ingredientName release];
 
 	[super dealloc];
-}
-
-- (OFString*)ingredientName
-{
-	return _ingredientName;
 }
 @end

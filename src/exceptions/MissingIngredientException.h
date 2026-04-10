@@ -5,7 +5,8 @@
 	OFString *_ingredientName;
 }
 
+@property (readonly, copy, nonatomic) OFString *ingredientName;
+
 + exceptionWithIngredientName: (OFString*)ingredientName;
 - initWithIngredientName: (OFString*)ingredientName;
-- (OFString*)ingredientName;
 @end
