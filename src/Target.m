@@ -4,10 +4,7 @@
 @implementation Target
 - init
 {
-	Class c = [self class];
-	[self release];
-	@throw [OFNotImplementedException exceptionWithClass: c
-						    selector: _cmd];
+	OF_INVALID_INIT_METHOD
 }
 
 - initWithName: (OFString*)name_
@@ -39,7 +36,7 @@
 		else
 			files = [fileList mutableCopy];
 	} else if ([fileList isKindOfClass: [OFDictionary class]]) {
-		OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+		void *pool = objc_autoreleasePoolPush();
 		OFEnumerator *keyEnumerator, *objectEnumerator;
 		OFString *dir;
 		OFArray *filesInDir;
@@ -66,15 +63,12 @@
 
 			fileEnumerator = [filesInDir objectEnumerator];
 
-			while ((file = [fileEnumerator nextObject]) != nil) {
-				OFString *path = [OFString stringWithPath:
-				    dir, file, nil];
-
-				[files addObject: path];
-			}
+			while ((file = [fileEnumerator nextObject]) != nil)
+				[files addObject:
+				    [dir stringByAppendingPathComponent: file]];
 		}
 
-		[pool release];
+		objc_autoreleasePoolPop(pool);
 	}
 }
 
@@ -94,7 +88,7 @@
 
 - (void)resolveConditionals: (OFSet*)conditions
 {
-	OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+	void *pool = objc_autoreleasePoolPush();
 	OFEnumerator *enumerator = [conditionals objectEnumerator];
 	OFDictionary *dict;
 
@@ -123,12 +117,12 @@
 		}
 	}
 
-	[pool release];
+	objc_autoreleasePoolPop(pool);
 }
 
 - (void)addIngredients
 {
-	OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+	void *pool = objc_autoreleasePoolPush();
 	OFEnumerator *enumerator = [ingredients objectEnumerator];
 	OFString *ingredientName;
 
@@ -136,7 +130,7 @@
 		[self inheritBuildinfo:
 		    [Ingredient ingredientWithName: ingredientName]];
 
-	[pool release];
+	objc_autoreleasePoolPop(pool);
 }
 
 - (OFString*)name

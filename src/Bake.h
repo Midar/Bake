@@ -3,7 +3,7 @@
 #import "Recipe.h"
 #import "Target.h"
 
-@interface Bake: OFObject
+@interface Bake: OFObject <OFApplicationDelegate>
 {
 	Recipe *recipe;
 	BOOL verbose, rebake;

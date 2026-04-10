@@ -11,7 +11,7 @@ static OFMutableDictionary *ingredients = nil;
 @implementation Ingredient
 + ingredientWithName: (OFString*)name
 {
-	OFAutoreleasePool *pool;
+	void *pool;
 	Ingredient *ingredient;
 	OFString *path;
 
@@ -21,33 +21,34 @@ static OFMutableDictionary *ingredients = nil;
 	if ((ingredient = [ingredients objectForKey: name]) != nil)
 		return ingredient;
 
-	pool = [[OFAutoreleasePool alloc] init];
+	pool = objc_autoreleasePoolPush();
 
 	if ((path = [Ingredient findIngredient: name]) == nil)
-		@throw [MissingIngredientException exceptionWithClass: self
-						       ingredientName: name];
+		@throw [MissingIngredientException
+		    exceptionWithIngredientName: name];
 
 	ingredient = [[[Ingredient alloc] initWithFile: path] autorelease];
 	[ingredients setObject: ingredient
 			forKey: name];
 
-	[pool release];
+	objc_autoreleasePoolPop(pool);
 
 	return ingredient;
 }
 
 + findIngredient: (OFString*)name
 {
+	OFFileManager *fileManager = [OFFileManager defaultManager];
 	OFString *path;
 
 	name = [name stringByAppendingString: @".ingredient"];
 
-	path = [OFString stringWithPath: @"ingredients", name, nil];
-	if ([OFFile fileExistsAtPath: path])
+	path = [@"ingredients" stringByAppendingPathComponent: name];
+	if ([fileManager fileExistsAtPath: path])
 		return path;
 
-	path = [OFString stringWithPath: INGREDIENTS_DIR, name, nil];
-	if ([OFFile fileExistsAtPath: path])
+	path = [INGREDIENTS_DIR stringByAppendingPathComponent: name];
+	if ([fileManager fileExistsAtPath: path])
 		return path;
 
 	return nil;
@@ -58,32 +59,29 @@ static OFMutableDictionary *ingredients = nil;
 	self = [super init];
 
 	@try {
-		OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+		void *pool = objc_autoreleasePoolPush();
 		OFDictionary *ingredient = [[OFString
-		    stringWithContentsOfFile: file] JSONValue];
+		    stringWithContentsOfFile: file] objectByParsingJSON];
 		id tmp;
 
 		if (![ingredient isKindOfClass: [OFDictionary class]])
-			@throw [OFInvalidFormatException
-			    exceptionWithClass: [self class]];
+			@throw [OFInvalidFormatException exception];
 
 		if ((tmp = [ingredient objectForKey: @"ingredient"]) == nil)
-			@throw [OFInvalidFormatException
-			    exceptionWithClass: [self class]];
+			@throw [OFInvalidFormatException exception];
 
 		if ((tmp = [tmp objectForKey: @"version"]) != nil) {
 			if (![tmp isKindOfClass: [OFNumber class]] ||
 			    [tmp intValue] != 1)
 				// FIXME: Include file name
-				@throw [WrongVersionException
-				    exceptionWithClass: [self class]];
+				@throw [WrongVersionException class];
 		} else
-			[of_stderr writeFormat: @"Warning: Ingredient %@ is "
-						@"lacking a version!", file];
+			[OFStdErr writeFormat: @"Warning: Ingredient %@ is "
+					       @"lacking a version!", file];
 
 		[self populateFromDictionary: ingredient];
 
-		[pool release];
+		objc_autoreleasePoolPop(pool);
 	} @catch (id e) {
 		[self release];
 		@throw e;

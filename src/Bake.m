@@ -14,8 +14,9 @@
 OF_APPLICATION_DELEGATE(Bake)
 
 @implementation Bake
-- (void)applicationDidFinishLaunching
+- (void)applicationDidFinishLaunching: (OFNotification *)notification
 {
+	OFFileManager *fileManager = [OFFileManager defaultManager];
 	OFArray *arguments;
 	OFSet *conditions;
 	DependencySolver *dependencySolver;
@@ -36,13 +37,12 @@ OF_APPLICATION_DELEGATE(Bake)
 
 		producer = [[IngredientProducer alloc] init];
 
-		arguments = [arguments
-		    arrayByRemovingObject: @"--produce-ingredient"];
 		enumerator = [arguments objectEnumerator];
 		while ((argument = [enumerator nextObject]) != nil)
-			[producer parseArgument: argument];
+			if (![argument isEqual: @"--produce-ingredient"])
+				[producer parseArgument: argument];
 
-		[of_stdout writeLine:
+		[OFStdOut writeLine:
 		    [[producer ingredient] JSONRepresentation]];
 
 		[OFApplication terminate];
@@ -52,15 +52,15 @@ OF_APPLICATION_DELEGATE(Bake)
 
 	@try {
 		recipe = [[Recipe alloc] init];
-	} @catch (OFOpenFileFailedException *e) {
-		[of_stderr writeLine: @"Error: Could not find Recipe!"];
+	} @catch (OFOpenItemFailedException *e) {
+		[OFStdErr writeLine: @"Error: Could not find Recipe!"];
 		[OFApplication terminateWithStatus: 1];
 	} @catch (OFInvalidJSONException *e) {
-		[of_stderr writeFormat: @"Error: Malformed Recipe in line "
-					@"%zd!\n", [e line]];
+		[OFStdErr writeFormat: @"Error: Malformed Recipe in line "
+				       @"%zd!\n", [e line]];
 		[OFApplication terminateWithStatus: 1];
 	} @catch (WrongVersionException *e) {
-		[of_stderr writeLine: @"Error: Recipe version too new!"];
+		[OFStdErr writeLine: @"Error: Recipe version too new!"];
 		[OFApplication terminateWithStatus: 1];
 	}
 
@@ -83,9 +83,9 @@ OF_APPLICATION_DELEGATE(Bake)
 	@try {
 		[dependencySolver solve];
 	} @catch (MissingDependencyException *e) {
-		[of_stderr writeFormat: @"Error: Target %@ is missing, but "
-					@"specified as dependency!\n",
-					[e dependencyName]];
+		[OFStdErr writeFormat: @"Error: Target %@ is missing, but "
+				       @"specified as dependency!\n",
+				       [e dependencyName]];
 		[OFApplication terminateWithStatus: 1];
 	}
 
@@ -103,9 +103,9 @@ OF_APPLICATION_DELEGATE(Bake)
 		@try {
 			[target addIngredients];
 		} @catch (MissingIngredientException *e) {
-			[of_stderr writeFormat: @"Error: Ingredient %@ "
-						@"missing!\n",
-						[e ingredientName]];
+			[OFStdErr writeFormat: @"Error: Ingredient %@ "
+					       @"missing!\n",
+					       [e ingredientName]];
 			[OFApplication terminateWithStatus: 1];
 		}
 
@@ -120,9 +120,9 @@ OF_APPLICATION_DELEGATE(Bake)
 			link = YES;
 
 			if (!verbose)
-				[of_stdout writeFormat: @"\r%@: %zd/%zd",
-							[target name], i,
-							[[target files] count]];
+				[OFStdOut writeFormat: @"\r%@: %zd/%zd",
+						       [target name], i,
+						       [[target files] count]];
 
 			@try {
 				Compiler *compiler =
@@ -132,8 +132,8 @@ OF_APPLICATION_DELEGATE(Bake)
 				[compiler compileFile: file
 					       target: target];
 			} @catch (CompilationFailedException *e) {
-				[of_stdout writeString: @"\n"];
-				[of_stderr writeFormat:
+				[OFStdOut writeString: @"\n"];
+				[OFStdErr writeFormat:
 				    @"Failed to compile file %@!\n"
 				    @"Command was:\n%@\n", file, [e command]];
 				[OFApplication terminateWithStatus: 1];
@@ -142,16 +142,17 @@ OF_APPLICATION_DELEGATE(Bake)
 			i++;
 
 			if (!verbose)
-				[of_stdout writeFormat: @"\r%@: %zd/%zd",
-							[target name], i,
-							[[target files] count]];
+				[OFStdOut writeFormat: @"\r%@: %zd/%zd",
+						       [target name], i,
+						       [[target files] count]];
 		}
 
 		if (link || ([[target files] count] > 0 &&
-		    ![OFFile fileExistsAtPath: [[ObjCCompiler sharedCompiler]
+		    ![fileManager fileExistsAtPath:
+		    [[ObjCCompiler sharedCompiler]
 		    outputFileForTarget: target]])) {
 			if (!verbose)
-				[of_stdout writeFormat:
+				[OFStdOut writeFormat:
 				    @"\r%@: %zd/%zd (linking)",
 				    [target name], i, [[target files] count]];
 
@@ -164,8 +165,8 @@ OF_APPLICATION_DELEGATE(Bake)
 				    linkTarget: target
 				    extraFlags: nil];
 			} @catch (LinkingFailedException *e) {
-				[of_stdout writeString: @"\n"];
-				[of_stderr writeFormat:
+				[OFStdOut writeString: @"\n"];
+				[OFStdErr writeFormat:
 				    @"Failed to link target %@!"
 				    @"Command was:\n%@\n",
 				    [target name], [e command]];
@@ -173,29 +174,29 @@ OF_APPLICATION_DELEGATE(Bake)
 			}
 
 			if (!verbose)
-				[of_stdout writeFormat:
+				[OFStdOut writeFormat:
 				    @"\r%@: %zd/%zd (successful)\n",
 				    [target name], i, [[target files] count]];
 		} else
-			[of_stdout writeFormat: @"%@: Already up to date\n",
-						[target name]];
+			[OFStdOut writeFormat: @"%@: Already up to date\n",
+					       [target name]];
 
 		if (install && [[target files] count] > 0) {
 			OFString *file = [[ObjCCompiler sharedCompiler]
 			    outputFileForTarget: target];
-			OFString *destination = [OFString stringWithPath:
-			    bindir, [file lastPathComponent], nil];
+			OFString *destination = [bindir
+			    stringByAppendingPathComponent:
+			    [file lastPathComponent]];
 
+			[OFStdOut writeFormat: @"Installing: %@ -> %@\n",
+					       file, destination];
 
-			[of_stdout writeFormat: @"Installing: %@ -> %@\n",
-						file, destination];
+			if (![fileManager directoryExistsAtPath: bindir])
+				[fileManager createDirectoryAtPath: bindir
+						     createParents: YES];
 
-			if (![OFFile directoryExistsAtPath: bindir])
-				[OFFile createDirectoryAtPath: bindir
-						createParents: YES];
-
-			[OFFile copyFileAtPath: file
-					toPath: destination];
+			[fileManager copyItemAtPath: file
+					     toPath: destination];
 		}
 	}
 
@@ -204,22 +205,25 @@ OF_APPLICATION_DELEGATE(Bake)
 
 - (void)findRecipe
 {
-	OFString *oldPath = [OFFile currentDirectoryPath];
+	OFFileManager *fileManager = [OFFileManager defaultManager];
+	OFString *oldPath = [fileManager currentDirectoryPath];
 
-	while (![OFFile fileExistsAtPath: @"Recipe"]) {
-		[OFFile changeToDirectoryAtPath: OF_PATH_PARENT_DIRECTORY];
+	while (![fileManager fileExistsAtPath: @"Recipe"]) {
+		// FIXME
+		[fileManager changeCurrentDirectoryPath: @".."];
 
 		/* We reached the file system root */
-		if ([[OFFile currentDirectoryPath] isEqual: oldPath])
+		if ([[fileManager currentDirectoryPath] isEqual: oldPath])
 			break;
 
-		oldPath = [OFFile currentDirectoryPath];
+		oldPath = [fileManager currentDirectoryPath];
 	}
 }
 
 - (BOOL)shouldRebuildFile: (OFString*)file
 		   target: (Target*)target
 {
+	OFFileManager *fileManager = [OFFileManager defaultManager];
 	Compiler *compiler;
 	OFString *objectFile;
 	OFDate *sourceDate, *objectDate;
@@ -232,13 +236,15 @@ OF_APPLICATION_DELEGATE(Bake)
 	objectFile = [compiler objectFileForSource: file
 					    target: target];
 
-	if (![OFFile fileExistsAtPath: objectFile])
+	if (![fileManager fileExistsAtPath: objectFile])
 		return YES;
 
-	sourceDate = [OFFile modificationDateOfFileAtPath: file];
-	objectDate = [OFFile modificationDateOfFileAtPath: objectFile];
+	sourceDate = [[fileManager attributesOfItemAtPath: file]
+	    fileModificationDate];
+	objectDate = [[fileManager attributesOfItemAtPath: objectFile]
+	    fileModificationDate];
 
-	return ([objectDate compare: sourceDate] == OF_ORDERED_ASCENDING);
+	return ([objectDate compare: sourceDate] == OFOrderedAscending);
 }
 
 - (BOOL)verbose

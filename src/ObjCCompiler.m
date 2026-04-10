@@ -33,15 +33,16 @@ static ObjCCompiler *sharedCompiler = nil;
 - (void)compileFile: (OFString*)file
 	     target: (Target*)target
 {
+	OFFileManager *fileManager = [OFFileManager defaultManager];
 	OFMutableString *command = [OFMutableString stringWithFormat: @"%@ -c",
 								      program];
 	OFString *objectFile = [self objectFileForSource: file
 						  target: target];
 	OFString *dir = [objectFile stringByDeletingLastPathComponent];
 
-	if (![OFFile directoryExistsAtPath: dir])
-		[OFFile createDirectoryAtPath: dir
-				createParents: YES];
+	if (![fileManager directoryExistsAtPath: dir])
+		[fileManager createDirectoryAtPath: dir
+				     createParents: YES];
 
 	if ([target debug])
 		[command appendString: @" -g"];
@@ -67,25 +68,25 @@ static ObjCCompiler *sharedCompiler = nil;
 	[command appendFormat: @" -o %@ %@", objectFile, file];
 
 	if ([(Bake*)[[OFApplication sharedApplication] delegate] verbose])
-		[of_stdout writeLine: command];
+		[OFStdOut writeLine: command];
 
-	if (system([command cStringWithEncoding: OF_STRING_ENCODING_NATIVE]))
+	if (system([command cStringWithEncoding: [OFLocale encoding]]))
 		@throw [CompilationFailedException
-		    exceptionWithClass: [self class]
-			       command: command];
+		    exceptionWithCommand: command];
 }
 
 - (void)linkTarget: (Target*)target
 	extraFlags: (OFString*)extraFlags
 {
+	OFFileManager *fileManager = [OFFileManager defaultManager];
 	OFMutableString *command = [OFMutableString stringWithString: program];
 	OFString *outputFile = [self outputFileForTarget: target];
 	OFString *file, *dir = [outputFile stringByDeletingLastPathComponent];
 	OFEnumerator *enumerator;
 
-	if (![OFFile directoryExistsAtPath: dir])
-		[OFFile createDirectoryAtPath: dir
-				createParents: YES];
+	if (![fileManager directoryExistsAtPath: dir])
+		[fileManager createDirectoryAtPath: dir
+				     createParents: YES];
 
 	if ([target debug])
 		[command appendString: @" -g"];
@@ -118,10 +119,9 @@ static ObjCCompiler *sharedCompiler = nil;
 	}
 
 	if ([(Bake*)[[OFApplication sharedApplication] delegate] verbose])
-		[of_stdout writeLine: command];
+		[OFStdOut writeLine: command];
 
-	if (system([command cStringWithEncoding: OF_STRING_ENCODING_NATIVE]))
-		@throw [LinkingFailedException exceptionWithClass: [self class]
-							  command: command];
+	if (system([command cStringWithEncoding: [OFLocale encoding]]))
+		@throw [LinkingFailedException exceptionWithCommand: command];
 }
 @end

@@ -8,28 +8,25 @@
 	self = [super init];
 
 	@try {
-		OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+		void *pool = objc_autoreleasePoolPush();
 		OFDictionary *recipe = [[OFString
-		    stringWithContentsOfFile: @"Recipe"] JSONValue];
+		    stringWithContentsOfFile: @"Recipe"] objectByParsingJSON];
 		id tmp;
 
 		if (![recipe isKindOfClass: [OFDictionary class]])
-			@throw [OFInvalidFormatException
-			    exceptionWithClass: [self class]];
+			@throw [OFInvalidFormatException exception];
 
 		if ((tmp = [recipe objectForKey: @"recipe"]) == nil)
-			@throw [OFInvalidFormatException
-			    exceptionWithClass: [self class]];
+			@throw [OFInvalidFormatException exception];
 
 		if ((tmp = [tmp objectForKey: @"version"]) != nil) {
 			if (![tmp isKindOfClass: [OFNumber class]] ||
 			    [tmp intValue] != 1)
 				// FIXME: Include file name
-				@throw [WrongVersionException
-				    exceptionWithClass: [self class]];
+				@throw [WrongVersionException exception];
 		} else
-			[of_stderr writeLine: @"Warning: Recipe is lacking a "
-					      @"version!"];
+			[OFStdErr writeLine: @"Warning: Recipe is lacking a "
+					     @"version!"];
 
 		[self populateFromDictionary: recipe];
 
@@ -59,7 +56,7 @@
 			}
 		}
 
-		[pool release];
+		objc_autoreleasePoolPop(pool);
 	} @catch (id e) {
 		[self release];
 		@throw e;

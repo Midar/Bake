@@ -20,8 +20,7 @@
 - (void)visit
 {
 	if (++visited > 1)
-		@throw [CircularDependencyException
-		    exceptionWithClass: [self class]];
+		@throw [CircularDependencyException exception];
 }
 
 - (Target*)target

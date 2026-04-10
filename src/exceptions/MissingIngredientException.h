@@ -5,9 +5,7 @@
 	OFString *ingredientName;
 }
 
-+ exceptionWithClass: (Class)class_
-      ingredientName: (OFString*)ingredientName;
--  initWithClass: (Class)class_
-  ingredientName: (OFString*)ingredientName;
++ exceptionWithIngredientName: (OFString*)ingredientName;
+- initWithIngredientName: (OFString*)ingredientName;
 - (OFString*)ingredientName;
 @end

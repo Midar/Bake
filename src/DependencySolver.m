@@ -30,7 +30,7 @@
 
 - (void)addTarget: (Target*)target
 {
-	OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+	void *pool = objc_autoreleasePoolPush();
 	DependencyNode *node;
 
 	node = [[[DependencyNode alloc] initWithTarget: target] autorelease];
@@ -38,12 +38,12 @@
 	[nodes setObject: node
 		  forKey: [target name]];
 
-	[pool release];
+	objc_autoreleasePoolPop(pool);
 }
 
 - (void)solveDependenciesForNode: (DependencyNode*)node
 {
-	OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+	void *pool = objc_autoreleasePoolPush();
 	OFEnumerator *enumerator;
 	OFString *dependencyName;
 
@@ -55,8 +55,7 @@
 
 		if ((dependency = [nodes objectForKey: dependencyName]) == nil)
 			@throw [MissingDependencyException
-			    exceptionWithClass: [self class]
-				dependencyName: dependencyName];
+			    exceptionWithDependencyName: dependencyName];
 
 		if (![dependency isInTargetOrder])
 			[self solveDependenciesForNode: dependency];
@@ -65,12 +64,12 @@
 	[targetOrder addObject: [node target]];
 	[node setInTargetOrder: YES];
 
-	[pool release];
+	objc_autoreleasePoolPop(pool);
 }
 
 - (void)solve
 {
-	OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+	void *pool = objc_autoreleasePoolPush();
 	OFEnumerator *enumerator = [nodes objectEnumerator];
 	DependencyNode *node;
 
@@ -78,7 +77,7 @@
 		if (![node isInTargetOrder])
 			[self solveDependenciesForNode: node];
 
-	[pool release];
+	objc_autoreleasePoolPop(pool);
 }
 
 - (OFArray*)targetOrder

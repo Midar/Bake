@@ -1,17 +1,15 @@
 #import "MissingIngredientException.h"
 
 @implementation MissingIngredientException
-+ exceptionWithClass: (Class)class
-      ingredientName: (OFString*)ingredientName
++ exceptionWithIngredientName: (OFString*)ingredientName
 {
-	return [[[self alloc] initWithClass: class
-			     ingredientName: ingredientName] autorelease];
+	return [[[self alloc] initWithIngredientName: ingredientName]
+	    autorelease];
 }
 
--  initWithClass: (Class)class
-  ingredientName: (OFString*)ingredientName_
+-  initWithIngredientName: (OFString*)ingredientName_
 {
-	self = [super initWithClass: class];
+	self = [super init];
 
 	@try {
 		ingredientName = [ingredientName_ copy];
@@ -25,10 +23,7 @@
 
 - init
 {
-	Class c = [self class];
-	[self release];
-	@throw [OFNotImplementedException exceptionWithClass: c
-						    selector: _cmd];
+	OF_INVALID_INIT_METHOD
 }
 
 - (void)dealloc

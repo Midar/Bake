@@ -6,7 +6,7 @@
 	self = [super init];
 
 	@try {
-		OFAutoreleasePool *pool = [[OFAutoreleasePool alloc] init];
+		void *pool = objc_autoreleasePoolPush();
 		OFDictionary *info;
 
 		info = [OFDictionary
@@ -16,7 +16,7 @@
 		    initWithObject: info
 			    forKey: @"ingredient"];
 
-		[pool release];
+		objc_autoreleasePoolPop(pool);
 	} @catch (id e) {
 		[self release];
 		@throw e;
@@ -51,19 +51,19 @@
 
 	if ([argument hasPrefix: @"-I"])
 		ADD_TO_ARRAY(@"includedirs", [argument substringWithRange:
-		    of_range(2, [argument length] - 2)])
+		    OFMakeRange(2, [argument length] - 2)])
 	else if ([argument hasPrefix: @"-D"])
 		ADD_TO_ARRAY(@"defines", [argument substringWithRange:
-		    of_range(2, [argument length] - 2)])
+		    OFMakeRange(2, [argument length] - 2)])
 	else if ([argument hasPrefix: @"-L"])
 		ADD_TO_ARRAY(@"libdirs", [argument substringWithRange:
-		    of_range(2, [argument length] - 2)])
+		    OFMakeRange(2, [argument length] - 2)])
 	else if ([argument hasPrefix: @"-l"])
 		ADD_TO_ARRAY(@"libs", [argument substringWithRange:
-		    of_range(2, [argument length] - 2)])
+		    OFMakeRange(2, [argument length] - 2)])
 	else if ([argument isEqual: @"-g"])
 		[ingredient setObject: [OFNumber numberWithBool: YES]
-			    forKey: @"debug"];
+			       forKey: @"debug"];
 	else
 		ADD_TO_ARRAY(@"objcflags", argument)
 

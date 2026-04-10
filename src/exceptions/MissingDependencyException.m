@@ -1,17 +1,15 @@
 #import "MissingDependencyException.h"
 
 @implementation MissingDependencyException
-+ exceptionWithClass: (Class)class
-      dependencyName: (OFString*)dependencyName
++ exceptionWithDependencyName: (OFString*)dependencyName
 {
-	return [[[self alloc] initWithClass: class
-			     dependencyName: dependencyName] autorelease];
+	return [[[self alloc] initWithDependencyName: dependencyName]
+	    autorelease];
 }
 
--  initWithClass: (Class)class
-  dependencyName: (OFString*)dependencyName_
+- initWithDependencyName: (OFString*)dependencyName_
 {
-	self = [super initWithClass: class];
+	self = [super init];
 
 	@try {
 		dependencyName = [dependencyName_ copy];
@@ -25,10 +23,7 @@
 
 - init
 {
-	Class c = [self class];
-	[self release];
-	@throw [OFNotImplementedException exceptionWithClass: c
-						    selector: _cmd];
+	OF_INVALID_INIT_METHOD
 }
 
 - (void)dealloc

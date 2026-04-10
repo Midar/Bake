@@ -1,17 +1,14 @@
 #import "CommandFailedException.h"
 
 @implementation CommandFailedException
-+ exceptionWithClass: (Class)class
-	     command: (OFString*)command
++ exceptionWithCommand: (OFString*)command
 {
-	return [[[self alloc] initWithClass: class
-				    command: command] autorelease];
+	return [[[self alloc] initWithCommand: command] autorelease];
 }
 
-- initWithClass: (Class)class
-	command: (OFString*)command_
+- initWithCommand: (OFString*)command_
 {
-	self = [super initWithClass: class];
+	self = [super init];
 
 	@try {
 		command = [command_ copy];
@@ -25,10 +22,7 @@
 
 - init
 {
-	Class c = [self class];
-	[self release];
-	@throw [OFNotImplementedException exceptionWithClass: c
-						    selector: _cmd];
+	OF_INVALID_INIT_METHOD
 }
 
 - (void)dealloc
