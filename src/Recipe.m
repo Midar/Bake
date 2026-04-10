@@ -32,21 +32,15 @@
 
 		if ((tmp = [recipe objectForKey: @"targets"]) != nil &&
 		    [tmp isKindOfClass: [OFDictionary class]]) {
-			OFEnumerator *keyEnumerator, *objectEnumerator;
-			OFString *name;
-			OFDictionary *info;
-			Target *target;
-
 			_targets = [[OFMutableDictionary alloc] init];
-			keyEnumerator = [tmp keyEnumerator];
-			objectEnumerator = [tmp objectEnumerator];
 
-			while ((name = [keyEnumerator nextObject]) != nil &&
-			    (info = [objectEnumerator nextObject]) != nil) {
+			for (OFString *name in tmp) {
+				OFDictionary *info = [tmp objectForKey: name];
+
 				if (![info isKindOfClass: [OFDictionary class]])
 					continue;
 
-				target = [[[Target alloc] initWithName:
+				Target *target = [[[Target alloc] initWithName:
 				    name] autorelease];
 				[target populateFromDictionary: info];
 				[target inheritBuildinfo: self];

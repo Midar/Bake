@@ -75,8 +75,7 @@ static ObjCCompiler *sharedCompiler = nil;
 	OFFileManager *fileManager = [OFFileManager defaultManager];
 	OFMutableString *command = [OFMutableString stringWithString: _program];
 	OFString *outputFile = [self outputFileForTarget: target];
-	OFString *file, *dir = [outputFile stringByDeletingLastPathComponent];
-	OFEnumerator *enumerator;
+	OFString *dir = [outputFile stringByDeletingLastPathComponent];
 
 	if (![fileManager directoryExistsAtPath: dir])
 		[fileManager createDirectoryAtPath: dir
@@ -92,8 +91,7 @@ static ObjCCompiler *sharedCompiler = nil;
 
 	[command appendFormat: @" -o %@", outputFile];
 
-	enumerator = [[target files] objectEnumerator];
-	while ((file = [enumerator nextObject]) != nil) {
+	for (OFString *file in [target files]) {
 		[command appendString: @" "];
 		[command appendString:
 		    [self objectFileForSource: file

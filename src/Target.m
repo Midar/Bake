@@ -37,20 +37,12 @@
 			_files = [fileList mutableCopy];
 	} else if ([fileList isKindOfClass: [OFDictionary class]]) {
 		void *pool = objc_autoreleasePoolPush();
-		OFEnumerator *keyEnumerator, *objectEnumerator;
-		OFString *dir;
-		OFArray *filesInDir;
 
 		if (_files == nil)
 			_files = [[OFMutableArray alloc] init];
 
-		keyEnumerator = [fileList keyEnumerator];
-		objectEnumerator = [fileList objectEnumerator];
-
-		while ((dir = [keyEnumerator nextObject]) != nil &&
-		    (filesInDir = [objectEnumerator nextObject]) != nil) {
-			OFEnumerator *fileEnumerator;
-			OFString *file;
+		for (OFString *dir in fileList) {
+			OFArray *filesInDir = [fileList objectForKey: dir];
 
 			if (![dir isKindOfClass: [OFString class]] ||
 			    ![filesInDir isKindOfClass: [OFArray class]])
@@ -61,9 +53,7 @@
 				continue;
 			}
 
-			fileEnumerator = [filesInDir objectEnumerator];
-
-			while ((file = [fileEnumerator nextObject]) != nil)
+			for (OFString *file in filesInDir)
 				[_files addObject:
 				    [dir stringByAppendingPathComponent: file]];
 		}
@@ -89,10 +79,8 @@
 - (void)resolveConditionals: (OFSet*)conditions
 {
 	void *pool = objc_autoreleasePoolPush();
-	OFEnumerator *enumerator = [_conditionals objectEnumerator];
-	OFDictionary *dict;
 
-	while ((dict = [enumerator nextObject]) != nil) {
+	for (OFDictionary *dict in _conditionals) {
 		OFString *condition = [dict objectForKey: @"if"];
 		OFDictionary *info = [dict objectForKey: @"then"];
 
@@ -123,10 +111,8 @@
 - (void)addIngredients
 {
 	void *pool = objc_autoreleasePoolPush();
-	OFEnumerator *enumerator = [_ingredients objectEnumerator];
-	OFString *ingredientName;
 
-	while ((ingredientName = [enumerator nextObject]) != nil)
+	for (OFString *ingredientName in _ingredients)
 		[self inheritBuildinfo:
 		    [Ingredient ingredientWithName: ingredientName]];
 

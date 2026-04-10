@@ -44,13 +44,10 @@
 - (void)solveDependenciesForNode: (DependencyNode*)node
 {
 	void *pool = objc_autoreleasePoolPush();
-	OFEnumerator *enumerator;
-	OFString *dependencyName;
 
 	[node visit];
 
-	enumerator = [[[node target] dependencies] objectEnumerator];
-	while ((dependencyName = [enumerator nextObject]) != nil) {
+	for (OFString *dependencyName in [[node target] dependencies]) {
 		DependencyNode *dependency;
 
 		if ((dependency = [_nodes objectForKey: dependencyName]) == nil)
@@ -70,10 +67,8 @@
 - (void)solve
 {
 	void *pool = objc_autoreleasePoolPush();
-	OFEnumerator *enumerator = [_nodes objectEnumerator];
-	DependencyNode *node;
 
-	while ((node = [enumerator nextObject]) != nil)
+	for (DependencyNode *node in _nodes)
 		if (![node isInTargetOrder])
 			[self solveDependenciesForNode: node];
 

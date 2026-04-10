@@ -20,9 +20,6 @@ OF_APPLICATION_DELEGATE(Bake)
 	OFArray *arguments;
 	OFSet *conditions;
 	DependencySolver *dependencySolver;
-	OFEnumerator *enumerator;
-	Target *target;
-	OFArray *targetOrder;
 	BOOL install;
 	OFString *prefix = @"/usr/local";
 	OFString *bindir = [prefix stringByAppendingString: @"/bin"];
@@ -31,14 +28,10 @@ OF_APPLICATION_DELEGATE(Bake)
 	install = [arguments containsObject: @"--install"];
 
 	if ([arguments containsObject: @"--produce-ingredient"]) {
-		IngredientProducer *producer;
-		OFEnumerator *enumerator;
-		OFString *argument;
+		IngredientProducer *producer =
+		    [[IngredientProducer alloc] init];
 
-		producer = [[IngredientProducer alloc] init];
-
-		enumerator = [arguments objectEnumerator];
-		while ((argument = [enumerator nextObject]) != nil)
+		for (OFString *argument in arguments)
 			if (![argument isEqual: @"--produce-ingredient"])
 				[producer parseArgument: argument];
 
@@ -76,8 +69,7 @@ OF_APPLICATION_DELEGATE(Bake)
 
 	dependencySolver = [[[DependencySolver alloc] init] autorelease];
 
-	enumerator = [[_recipe targets] objectEnumerator];
-	while ((target = [enumerator nextObject]) != nil)
+	for (Target *target in [_recipe targets])
 		[dependencySolver addTarget: target];
 
 	@try {
@@ -89,12 +81,7 @@ OF_APPLICATION_DELEGATE(Bake)
 		[OFApplication terminateWithStatus: 1];
 	}
 
-	targetOrder = [dependencySolver targetOrder];
-
-	enumerator = [targetOrder objectEnumerator];
-	while ((target = [enumerator nextObject]) != nil) {
-		OFEnumerator *fileEnumerator;
-		OFString *file;
+	for (Target *target in [dependencySolver targetOrder]) {
 		size_t i = 0;
 		BOOL link = NO;
 
@@ -109,8 +96,7 @@ OF_APPLICATION_DELEGATE(Bake)
 			[OFApplication terminateWithStatus: 1];
 		}
 
-		fileEnumerator = [[target files] objectEnumerator];
-		while ((file = [fileEnumerator nextObject]) != nil) {
+		for (OFString *file in [target files]) {
 			if (![self shouldRebuildFile: file
 					      target: target]) {
 				i++;
