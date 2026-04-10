@@ -3,7 +3,7 @@
 @interface Buildinfo: OFObject
 {
 	OFMutableArray *_ingredients;
-	BOOL _debug;
+	bool _debug;
 	OFString *_objC;
 	OFMutableArray *_objCFlags, *_includeDirs, *_defines, *_libs, *_libDirs;
 	OFMutableArray *_conditionals;
@@ -12,7 +12,7 @@
 - (void)populateFromDictionary: (OFDictionary*)info;
 - (void)inheritBuildinfo: (Buildinfo*)info;
 - (OFArray*)ingredients;
-- (BOOL)debug;
+- (bool)debug;
 - (OFString*)objC;
 - (OFArray*)objCFlags;
 - (OFArray*)includeDirs;

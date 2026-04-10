@@ -74,7 +74,7 @@
 	return _ingredients;
 }
 
-- (BOOL)debug
+- (bool)debug
 {
 	return _debug;
 }

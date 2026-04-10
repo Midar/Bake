@@ -62,7 +62,7 @@
 		ADD_TO_ARRAY(@"libs", [argument substringWithRange:
 		    OFMakeRange(2, [argument length] - 2)])
 	else if ([argument isEqual: @"-g"])
-		[_ingredient setObject: [OFNumber numberWithBool: YES]
+		[_ingredient setObject: [OFNumber numberWithBool: true]
 				forKey: @"debug"];
 	else
 		ADD_TO_ARRAY(@"objcflags", argument)

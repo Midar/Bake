@@ -6,11 +6,11 @@
 @interface Bake: OFObject <OFApplicationDelegate>
 {
 	Recipe *_recipe;
-	BOOL _verbose, _rebake;
+	bool _verbose, _rebake;
 }
 
 - (void)findRecipe;
-- (BOOL)shouldRebuildFile: (OFString*)file
+- (bool)shouldRebuildFile: (OFString*)file
 		   target: (Target*)target;
-- (BOOL)verbose;
+- (bool)verbose;
 @end

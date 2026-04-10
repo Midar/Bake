@@ -36,7 +36,7 @@ static ObjCCompiler *sharedCompiler = nil;
 
 	if (![fileManager directoryExistsAtPath: dir])
 		[fileManager createDirectoryAtPath: dir
-				     createParents: YES];
+				     createParents: true];
 
 	if ([target debug])
 		[command appendString: @" -g"];
@@ -79,7 +79,7 @@ static ObjCCompiler *sharedCompiler = nil;
 
 	if (![fileManager directoryExistsAtPath: dir])
 		[fileManager createDirectoryAtPath: dir
-				     createParents: YES];
+				     createParents: true];
 
 	if ([target debug])
 		[command appendString: @" -g"];

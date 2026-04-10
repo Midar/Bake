@@ -59,7 +59,7 @@
 	}
 
 	[_targetOrder addObject: [node target]];
-	[node setInTargetOrder: YES];
+	[node setInTargetOrder: true];
 
 	objc_autoreleasePoolPop(pool);
 }

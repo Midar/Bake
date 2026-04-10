@@ -23,12 +23,12 @@
 	return _target;
 }
 
-- (BOOL)isInTargetOrder
+- (bool)isInTargetOrder
 {
 	return _inTargetOrder;
 }
 
-- (void)setInTargetOrder: (BOOL)inTargetOrder
+- (void)setInTargetOrder: (bool)inTargetOrder
 {
 	_inTargetOrder = inTargetOrder;
 }

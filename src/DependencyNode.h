@@ -6,12 +6,12 @@
 {
 	Target *_target;
 	unsigned _visited;
-	BOOL _inTargetOrder;
+	bool _inTargetOrder;
 }
 
 - initWithTarget: (Target*)target;
 - (void)visit;
 - (Target*)target;
-- (BOOL)isInTargetOrder;
-- (void)setInTargetOrder: (BOOL)inList;
+- (bool)isInTargetOrder;
+- (void)setInTargetOrder: (bool)inList;
 @end

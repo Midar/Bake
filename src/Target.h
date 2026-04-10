@@ -5,9 +5,9 @@
 	OFString *_name;
 	OFMutableArray *_files;
 	OFMutableArray *_dependencies;
-	BOOL _sharedLib, _staticLib;
+	bool _sharedLib, _staticLib;
 	unsigned _sharedLibMajor, _sharedLibMinor;
-	BOOL _install;
+	bool _install;
 	OFDictionary *_installHeaders;
 }
 

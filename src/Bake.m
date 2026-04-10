@@ -20,7 +20,7 @@ OF_APPLICATION_DELEGATE(Bake)
 	OFArray *arguments;
 	OFSet *conditions;
 	DependencySolver *dependencySolver;
-	BOOL install;
+	bool install;
 	OFString *prefix = @"/usr/local";
 	OFString *bindir = [prefix stringByAppendingString: @"/bin"];
 
@@ -83,7 +83,7 @@ OF_APPLICATION_DELEGATE(Bake)
 
 	for (Target *target in [dependencySolver targetOrder]) {
 		size_t i = 0;
-		BOOL link = NO;
+		bool link = false;
 
 		[target resolveConditionals: conditions];
 
@@ -103,7 +103,7 @@ OF_APPLICATION_DELEGATE(Bake)
 				continue;
 			}
 
-			link = YES;
+			link = true;
 
 			if (!_verbose)
 				[OFStdOut writeFormat: @"\r%@: %zd/%zd",
@@ -179,7 +179,7 @@ OF_APPLICATION_DELEGATE(Bake)
 
 			if (![fileManager directoryExistsAtPath: bindir])
 				[fileManager createDirectoryAtPath: bindir
-						     createParents: YES];
+						     createParents: true];
 
 			[fileManager copyItemAtPath: file
 					     toPath: destination];
@@ -206,7 +206,7 @@ OF_APPLICATION_DELEGATE(Bake)
 	}
 }
 
-- (BOOL)shouldRebuildFile: (OFString*)file
+- (bool)shouldRebuildFile: (OFString*)file
 		   target: (Target*)target
 {
 	OFFileManager *fileManager = [OFFileManager defaultManager];
@@ -215,7 +215,7 @@ OF_APPLICATION_DELEGATE(Bake)
 	OFDate *sourceDate, *objectDate;
 
 	if (_rebake)
-		return YES;
+		return true;
 
 	compiler = [Compiler compilerForFile: file
 				      target: target];
@@ -223,7 +223,7 @@ OF_APPLICATION_DELEGATE(Bake)
 					    target: target];
 
 	if (![fileManager fileExistsAtPath: objectFile])
-		return YES;
+		return true;
 
 	sourceDate = [[fileManager attributesOfItemAtPath: file]
 	    fileModificationDate];
@@ -233,7 +233,7 @@ OF_APPLICATION_DELEGATE(Bake)
 	return ([objectDate compare: sourceDate] == OFOrderedAscending);
 }
 
-- (BOOL)verbose
+- (bool)verbose
 {
 	return _verbose;
 }
