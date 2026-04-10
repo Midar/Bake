@@ -7,7 +7,7 @@
 static ObjCCompiler *sharedCompiler = nil;
 
 @implementation ObjCCompiler
-+ sharedCompiler
++ (instancetype)sharedCompiler
 {
 	if (sharedCompiler == nil)
 		sharedCompiler = [[ObjCCompiler alloc] init];
@@ -15,7 +15,7 @@ static ObjCCompiler *sharedCompiler = nil;
 	return sharedCompiler;
 }
 
-- init
+- (instancetype)init
 {
 	self = [super init];
 
@@ -24,44 +24,41 @@ static ObjCCompiler *sharedCompiler = nil;
 	return self;
 }
 
-- (void)compileFile: (OFString*)file
-	     target: (Target*)target
+- (void)compileFile: (OFString *)file target: (Target *)target
 {
 	OFFileManager *fileManager = [OFFileManager defaultManager];
 	OFMutableString *command = [OFMutableString stringWithFormat: @"%@ -c",
 								      _program];
-	OFString *objectFile = [self objectFileForSource: file
-						  target: target];
-	OFString *dir = [objectFile stringByDeletingLastPathComponent];
+	OFString *objectFile = [self objectFileForSource: file target: target];
+	OFString *dir = objectFile.stringByDeletingLastPathComponent;
 
 	if (![fileManager directoryExistsAtPath: dir])
-		[fileManager createDirectoryAtPath: dir
-				     createParents: true];
+		[fileManager createDirectoryAtPath: dir createParents: true];
 
-	if ([target debug])
+	if (target.debug)
 		[command appendString: @" -g"];
 
-	if ([target includeDirs] != nil && [[target includeDirs] count] > 0) {
+	if (target.includeDirs.count > 0) {
 		[command appendString: @" -I"];
 		[command appendString:
-		    [[target includeDirs] componentsJoinedByString: @" -I"]];
+		    [target.includeDirs componentsJoinedByString: @" -I"]];
 	}
 
-	if ([target defines] != nil && [[target defines] count] > 0) {
+	if (target.defines.count > 0) {
 		[command appendString: @" -D"];
 		[command appendString:
-		    [[target defines] componentsJoinedByString: @" -D"]];
+		    [target.defines componentsJoinedByString: @" -D"]];
 	}
 
-	if ([target objCFlags] != nil) {
+	if (target.objCFlags.count > 0) {
 		[command appendString: @" "];
 		[command appendString:
-		    [[target objCFlags] componentsJoinedByString: @" "]];
+		    [target.objCFlags componentsJoinedByString: @" "]];
 	}
 
 	[command appendFormat: @" -o %@ %@", objectFile, file];
 
-	if ([(Bake*)[[OFApplication sharedApplication] delegate] verbose])
+	if ([(Bake *)[[OFApplication sharedApplication] delegate] verbose])
 		[OFStdOut writeLine: command];
 
 	if (system([command cStringWithEncoding: [OFLocale encoding]]))
@@ -69,17 +66,15 @@ static ObjCCompiler *sharedCompiler = nil;
 		    exceptionWithCommand: command];
 }
 
-- (void)linkTarget: (Target*)target
-	extraFlags: (OFString*)extraFlags
+- (void)linkTarget: (Target *)target extraFlags: (OFString *)extraFlags
 {
 	OFFileManager *fileManager = [OFFileManager defaultManager];
 	OFMutableString *command = [OFMutableString stringWithString: _program];
 	OFString *outputFile = [self outputFileForTarget: target];
-	OFString *dir = [outputFile stringByDeletingLastPathComponent];
+	OFString *dir = outputFile.stringByDeletingLastPathComponent;
 
 	if (![fileManager directoryExistsAtPath: dir])
-		[fileManager createDirectoryAtPath: dir
-				     createParents: true];
+		[fileManager createDirectoryAtPath: dir createParents: true];
 
 	if ([target debug])
 		[command appendString: @" -g"];
@@ -91,26 +86,25 @@ static ObjCCompiler *sharedCompiler = nil;
 
 	[command appendFormat: @" -o %@", outputFile];
 
-	for (OFString *file in [target files]) {
+	for (OFString *file in target.files) {
 		[command appendString: @" "];
 		[command appendString:
-		    [self objectFileForSource: file
-				       target: target]];
+		    [self objectFileForSource: file target: target]];
 	}
 
-	if ([target libDirs] != nil && [[target libDirs] count] > 0) {
+	if (target.libDirs.count > 0) {
 		[command appendString: @" -L"];
 		[command appendString:
-		    [[target libDirs] componentsJoinedByString: @" -L"]];
+		    [target.libDirs componentsJoinedByString: @" -L"]];
 	}
 
-	if ([target libs] != nil && [[target libs] count] > 0) {
+	if (target.libs.count > 0) {
 		[command appendString: @" -l"];
 		[command appendString:
-		    [[target libs] componentsJoinedByString: @" -l"]];
+		    [target.libs componentsJoinedByString: @" -l"]];
 	}
 
-	if ([(Bake*)[[OFApplication sharedApplication] delegate] verbose])
+	if ([(Bake *)[[OFApplication sharedApplication] delegate] verbose])
 		[OFStdOut writeLine: command];
 
 	if (system([command cStringWithEncoding: [OFLocale encoding]]))

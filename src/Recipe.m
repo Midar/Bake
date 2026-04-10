@@ -5,14 +5,14 @@
 @implementation Recipe
 @synthesize targets = _targets;
 
-- init
+- (instancetype)init
 {
 	self = [super init];
 
 	@try {
 		void *pool = objc_autoreleasePoolPush();
-		OFDictionary *recipe = [[OFString
-		    stringWithContentsOfFile: @"Recipe"] objectByParsingJSON];
+		OFDictionary *recipe = [OFString
+		    stringWithContentsOfFile: @"Recipe"].objectByParsingJSON;
 		id tmp;
 
 		if (![recipe isKindOfClass: [OFDictionary class]])
@@ -47,8 +47,7 @@
 				[target populateFromDictionary: info];
 				[target inheritBuildinfo: self];
 
-				[_targets setObject: target
-					     forKey: name];
+				[_targets setObject: target forKey: name];
 			}
 
 			[_targets makeImmutable];

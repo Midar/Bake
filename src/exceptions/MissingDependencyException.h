@@ -7,6 +7,6 @@
 
 @property (readonly, copy, nonatomic) OFString *dependencyName;
 
-+ exceptionWithDependencyName: (OFString*)dependencyName;
-- initWithDependencyName: (OFString*)dependencyName;
++ (instancetype)exceptionWithDependencyName: (OFString *)dependencyName;
+- (instancetype)initWithDependencyName: (OFString *)dependencyName;
 @end

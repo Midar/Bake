@@ -19,6 +19,6 @@
 @property (readonly, copy, nonatomic) OFArray *libDirs;
 @property (readonly, copy, nonatomic) OFArray *conditionals;
 
-- (void)populateFromDictionary: (OFDictionary*)info;
-- (void)inheritBuildinfo: (Buildinfo*)info;
+- (void)populateFromDictionary: (OFDictionary *)info;
+- (void)inheritBuildinfo: (Buildinfo *)info;
 @end

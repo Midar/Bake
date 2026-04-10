@@ -5,5 +5,5 @@
 	OFString *_program;
 }
 
-+ sharedCompiler;
++ (instancetype)sharedCompiler;
 @end

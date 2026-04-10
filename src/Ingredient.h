@@ -7,7 +7,7 @@
 
 @property (readonly, copy, nonatomic) OFString *name;
 
-+ ingredientWithName: (OFString*)name;
-+ (OFString*)findIngredient: (OFString*)name;
-- initWithFile: (OFString*)file;
++ (Ingredient *)ingredientForName: (OFString *)name;
++ (OFString *)findIngredient: (OFString *)name;
+- (instancetype)initWithFile: (OFString *)file;
 @end

@@ -15,7 +15,7 @@
 @property (readonly, copy, nonatomic) OFArray *files;
 @property (readonly, copy, nonatomic) OFArray *dependencies;
 
-- initWithName: (OFString*)name;
-- (void)resolveConditionals: (OFSet*)conditions;
+- (instancetype)initWithName: (OFString *)name;
+- (void)resolveConditionals: (OFSet *)conditions;
 - (void)addIngredients;
 @end

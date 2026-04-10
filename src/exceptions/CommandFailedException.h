@@ -7,6 +7,6 @@
 
 @property (readonly, copy, nonatomic) OFString *command;
 
-+ exceptionWithCommand: (OFString*)command;
-- initWithCommand: (OFString*)command;
++ (instancetype)exceptionWithCommand: (OFString *)command;
+- (instancetype)initWithCommand: (OFString *)command;
 @end

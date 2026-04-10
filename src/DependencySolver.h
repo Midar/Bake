@@ -11,6 +11,6 @@
 
 @property (readonly, copy, nonatomic) OFArray *targetOrder;
 
-- (void)addTarget: (Target*)target;
+- (void)addTarget: (Target *)target;
 - (void)solve;
 @end

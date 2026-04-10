@@ -1,7 +1,7 @@
 #import "IngredientProducer.h"
 
 @implementation IngredientProducer
-- init
+- (instancetype)init
 {
 	self = [super init];
 
@@ -32,9 +32,9 @@
 	[super dealloc];
 }
 
-- (void)parseArgument: (OFString*)argument
+- (void)parseArgument: (OFString *)argument
 {
-	argument = [argument stringByDeletingEnclosingWhitespaces];
+	argument = argument.stringByDeletingEnclosingWhitespaces;
 
 #define ADD_TO_ARRAY(array, object)					\
 	do {								\
@@ -50,17 +50,13 @@
 	} while(0);
 
 	if ([argument hasPrefix: @"-I"])
-		ADD_TO_ARRAY(@"includedirs", [argument substringWithRange:
-		    OFMakeRange(2, [argument length] - 2)])
+		ADD_TO_ARRAY(@"includedirs", [argument substringFromIndex: 2])
 	else if ([argument hasPrefix: @"-D"])
-		ADD_TO_ARRAY(@"defines", [argument substringWithRange:
-		    OFMakeRange(2, [argument length] - 2)])
+		ADD_TO_ARRAY(@"defines", [argument substringFromIndex: 2])
 	else if ([argument hasPrefix: @"-L"])
-		ADD_TO_ARRAY(@"libdirs", [argument substringWithRange:
-		    OFMakeRange(2, [argument length] - 2)])
+		ADD_TO_ARRAY(@"libdirs", [argument substringFromIndex: 2])
 	else if ([argument hasPrefix: @"-l"])
-		ADD_TO_ARRAY(@"libs", [argument substringWithRange:
-		    OFMakeRange(2, [argument length] - 2)])
+		ADD_TO_ARRAY(@"libs", [argument substringFromIndex: 2])
 	else if ([argument isEqual: @"-g"])
 		[_ingredient setObject: [OFNumber numberWithBool: true]
 				forKey: @"debug"];
@@ -70,7 +66,7 @@
 #undef ADD_TO_ARRAY
 }
 
-- (OFDictionary*)ingredient
+- (OFDictionary *)ingredient
 {
 	return [[_ingredient copy] autorelease];
 }

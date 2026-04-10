@@ -52,7 +52,7 @@ OF_APPLICATION_DELEGATE(Bake)
 		[OFApplication terminateWithStatus: 1];
 	} @catch (OFInvalidJSONException *e) {
 		[OFStdErr writeFormat: @"Error: Malformed Recipe in line "
-				       @"%zd!\n", [e line]];
+				       @"%zd!\n", e.line];
 		[OFApplication terminateWithStatus: 1];
 	} @catch (WrongVersionException *e) {
 		[OFStdErr writeLine: @"Error: Recipe version too new!"];
@@ -64,14 +64,14 @@ OF_APPLICATION_DELEGATE(Bake)
 					    @"true",
 					    nil];
 
-	_verbose = ([arguments containsObject: @"--_verbose"] ||
+	_verbose = ([arguments containsObject: @"--verbose"] ||
 	    [arguments containsObject: @"-v"]);
 	_rebake = ([arguments containsObject: @"--rebake"] ||
 	    [arguments containsObject: @"-r"]);
 
 	dependencySolver = [[[DependencySolver alloc] init] autorelease];
 
-	for (Target *target in [_recipe targets])
+	for (Target *target in _recipe.targets)
 		[dependencySolver addTarget: target];
 
 	@try {
@@ -79,11 +79,11 @@ OF_APPLICATION_DELEGATE(Bake)
 	} @catch (MissingDependencyException *e) {
 		[OFStdErr writeFormat: @"Error: Target %@ is missing, but "
 				       @"specified as dependency!\n",
-				       [e dependencyName]];
+				       e.dependencyName];
 		[OFApplication terminateWithStatus: 1];
 	}
 
-	for (Target *target in [dependencySolver targetOrder]) {
+	for (Target *target in dependencySolver.targetOrder) {
 		size_t i = 0;
 		bool link = false;
 
@@ -94,13 +94,12 @@ OF_APPLICATION_DELEGATE(Bake)
 		} @catch (MissingIngredientException *e) {
 			[OFStdErr writeFormat: @"Error: Ingredient %@ "
 					       @"missing!\n",
-					       [e ingredientName]];
+					       e.ingredientName];
 			[OFApplication terminateWithStatus: 1];
 		}
 
 		for (OFString *file in [target files]) {
-			if (![self shouldRebuildFile: file
-					      target: target]) {
+			if (![self shouldRebuildFile: file target: target]) {
 				i++;
 				continue;
 			}
@@ -109,21 +108,20 @@ OF_APPLICATION_DELEGATE(Bake)
 
 			if (!_verbose)
 				[OFStdOut writeFormat: @"\r%@: %zd/%zd",
-						       [target name], i,
-						       [[target files] count]];
+						       target.name, i,
+						       target.files.count];
 
 			@try {
 				Compiler *compiler =
 				    [Compiler compilerForFile: file
 						       target: target];
 
-				[compiler compileFile: file
-					       target: target];
+				[compiler compileFile: file target: target];
 			} @catch (CompilationFailedException *e) {
 				[OFStdOut writeString: @"\n"];
 				[OFStdErr writeFormat:
 				    @"Failed to compile file %@!\n"
-				    @"Command was:\n%@\n", file, [e command]];
+				    @"Command was:\n%@\n", file, e.command];
 				[OFApplication terminateWithStatus: 1];
 			}
 
@@ -131,18 +129,18 @@ OF_APPLICATION_DELEGATE(Bake)
 
 			if (!_verbose)
 				[OFStdOut writeFormat: @"\r%@: %zd/%zd",
-						       [target name], i,
-						       [[target files] count]];
+						       target.name, i,
+						       target.files.count];
 		}
 
-		if (link || ([[target files] count] > 0 &&
+		if (link || (target.files.count > 0 &&
 		    ![fileManager fileExistsAtPath:
 		    [[ObjCCompiler sharedCompiler]
 		    outputFileForTarget: target]])) {
 			if (!_verbose)
 				[OFStdOut writeFormat:
 				    @"\r%@: %zd/%zd (linking)",
-				    [target name], i, [[target files] count]];
+				    target.name, i, target.files.count];
 
 			@try {
 				/*
@@ -157,24 +155,24 @@ OF_APPLICATION_DELEGATE(Bake)
 				[OFStdErr writeFormat:
 				    @"Failed to link target %@!"
 				    @"Command was:\n%@\n",
-				    [target name], [e command]];
+				    target.name, e.command];
 				[OFApplication terminateWithStatus: 1];
 			}
 
 			if (!_verbose)
 				[OFStdOut writeFormat:
 				    @"\r%@: %zd/%zd (successful)\n",
-				    [target name], i, [[target files] count]];
+				    target.name, i, target.files.count];
 		} else
 			[OFStdOut writeFormat: @"%@: Already up to date\n",
-					       [target name]];
+					       target.name];
 
-		if (install && [[target files] count] > 0) {
+		if (install && target.files.count > 0) {
 			OFString *file = [[ObjCCompiler sharedCompiler]
 			    outputFileForTarget: target];
 			OFString *destination = [bindir
 			    stringByAppendingPathComponent:
-			    [file lastPathComponent]];
+			    file.lastPathComponent];
 
 			[OFStdOut writeFormat: @"Installing: %@ -> %@\n",
 					       file, destination];
@@ -183,8 +181,7 @@ OF_APPLICATION_DELEGATE(Bake)
 				[fileManager createDirectoryAtPath: bindir
 						     createParents: true];
 
-			[fileManager copyItemAtPath: file
-					     toPath: destination];
+			[fileManager copyItemAtPath: file toPath: destination];
 		}
 	}
 
@@ -201,15 +198,14 @@ OF_APPLICATION_DELEGATE(Bake)
 		[fileManager changeCurrentDirectoryPath: @".."];
 
 		/* We reached the file system root */
-		if ([[fileManager currentDirectoryPath] isEqual: oldPath])
+		if ([fileManager.currentDirectoryPath isEqual: oldPath])
 			break;
 
-		oldPath = [fileManager currentDirectoryPath];
+		oldPath = fileManager.currentDirectoryPath;
 	}
 }
 
-- (bool)shouldRebuildFile: (OFString*)file
-		   target: (Target*)target
+- (bool)shouldRebuildFile: (OFString *)file target: (Target *)target
 {
 	OFFileManager *fileManager = [OFFileManager defaultManager];
 	Compiler *compiler;
@@ -219,18 +215,16 @@ OF_APPLICATION_DELEGATE(Bake)
 	if (_rebake)
 		return true;
 
-	compiler = [Compiler compilerForFile: file
-				      target: target];
-	objectFile = [compiler objectFileForSource: file
-					    target: target];
+	compiler = [Compiler compilerForFile: file target: target];
+	objectFile = [compiler objectFileForSource: file target: target];
 
 	if (![fileManager fileExistsAtPath: objectFile])
 		return true;
 
-	sourceDate = [[fileManager attributesOfItemAtPath: file]
-	    fileModificationDate];
-	objectDate = [[fileManager attributesOfItemAtPath: objectFile]
-	    fileModificationDate];
+	sourceDate = [fileManager attributesOfItemAtPath: file]
+	    .fileModificationDate;
+	objectDate = [fileManager attributesOfItemAtPath: objectFile]
+	    .fileModificationDate;
 
 	return ([objectDate compare: sourceDate] == OFOrderedAscending);
 }

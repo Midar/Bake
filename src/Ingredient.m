@@ -9,7 +9,7 @@
 static OFMutableDictionary *ingredients = nil;
 
 @implementation Ingredient
-+ ingredientWithName: (OFString*)name
++ (Ingredient *)ingredientForName: (OFString *)name
 {
 	void *pool;
 	Ingredient *ingredient;
@@ -28,15 +28,14 @@ static OFMutableDictionary *ingredients = nil;
 		    exceptionWithIngredientName: name];
 
 	ingredient = [[[Ingredient alloc] initWithFile: path] autorelease];
-	[ingredients setObject: ingredient
-			forKey: name];
+	[ingredients setObject: ingredient forKey: name];
 
 	objc_autoreleasePoolPop(pool);
 
 	return ingredient;
 }
 
-+ findIngredient: (OFString*)name
++ (OFString *)findIngredient: (OFString*)name
 {
 	OFFileManager *fileManager = [OFFileManager defaultManager];
 	OFString *path;
@@ -54,7 +53,7 @@ static OFMutableDictionary *ingredients = nil;
 	return nil;
 }
 
-- initWithFile: (OFString*)file
+- (instancetype)initWithFile: (OFString*)file
 {
 	self = [super init];
 

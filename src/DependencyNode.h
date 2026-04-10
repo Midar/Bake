@@ -12,6 +12,6 @@
 @property (readonly, retain, nonatomic) Target *target;
 @property (getter=isInTargetOrder, nonatomic) bool inTargetOrder;
 
-- initWithTarget: (Target*)target;
+- (instancetype)initWithTarget: (Target *)target;
 - (void)visit;
 @end

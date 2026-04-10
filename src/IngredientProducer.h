@@ -7,5 +7,5 @@
 
 @property (readonly, copy, nonatomic) OFDictionary *ingredient;
 
-- (void)parseArgument: (OFString*)argument;
+- (void)parseArgument: (OFString *)argument;
 @end

@@ -4,12 +4,12 @@
 @implementation Target
 @synthesize name = _name;
 
-- init
+- (instancetype)init
 {
 	OF_INVALID_INIT_METHOD
 }
 
-- initWithName: (OFString*)name
+- (instancetype)initWithName: (OFString*)name
 {
 	self = [super init];
 
@@ -64,7 +64,7 @@
 	}
 }
 
-- (void)populateFromDictionary: (OFDictionary*)info
+- (void)populateFromDictionary: (OFDictionary *)info
 {
 	id tmp;
 
@@ -78,7 +78,7 @@
 		_dependencies = [tmp mutableCopy];
 }
 
-- (void)resolveConditionals: (OFSet*)conditions
+- (void)resolveConditionals: (OFSet *)conditions
 {
 	void *pool = objc_autoreleasePoolPush();
 
@@ -116,7 +116,7 @@
 
 	for (OFString *ingredientName in _ingredients)
 		[self inheritBuildinfo:
-		    [Ingredient ingredientWithName: ingredientName]];
+		    [Ingredient ingredientForName: ingredientName]];
 
 	objc_autoreleasePoolPop(pool);
 }

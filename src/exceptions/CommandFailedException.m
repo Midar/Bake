@@ -3,12 +3,12 @@
 @implementation CommandFailedException
 @synthesize command = _command;
 
-+ exceptionWithCommand: (OFString*)command
++ (instancetype)exceptionWithCommand: (OFString *)command
 {
 	return [[[self alloc] initWithCommand: command] autorelease];
 }
 
-- initWithCommand: (OFString*)command
+- (instancetype)initWithCommand: (OFString *)command
 {
 	self = [super init];
 
@@ -22,7 +22,7 @@
 	return self;
 }
 
-- init
+- (instancetype)init
 {
 	OF_INVALID_INIT_METHOD
 }

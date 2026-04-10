@@ -3,13 +3,13 @@
 @implementation MissingIngredientException
 @synthesize ingredientName = _ingredientName;
 
-+ exceptionWithIngredientName: (OFString*)ingredientName
++ (instancetype)exceptionWithIngredientName: (OFString *)ingredientName
 {
 	return [[[self alloc] initWithIngredientName: ingredientName]
 	    autorelease];
 }
 
--  initWithIngredientName: (OFString*)ingredientName
+- (instancetype)initWithIngredientName: (OFString *)ingredientName
 {
 	self = [super init];
 

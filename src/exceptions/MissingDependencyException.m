@@ -3,13 +3,13 @@
 @implementation MissingDependencyException
 @synthesize dependencyName = _dependencyName;
 
-+ exceptionWithDependencyName: (OFString*)dependencyName
++ (instancetype)exceptionWithDependencyName: (OFString *)dependencyName
 {
 	return [[[self alloc] initWithDependencyName: dependencyName]
 	    autorelease];
 }
 
-- initWithDependencyName: (OFString*)dependencyName
+- (instancetype)initWithDependencyName: (OFString *)dependencyName
 {
 	self = [super init];
 
@@ -23,7 +23,7 @@
 	return self;
 }
 
-- init
+- (instancetype)init
 {
 	OF_INVALID_INIT_METHOD
 }

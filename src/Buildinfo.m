@@ -6,7 +6,7 @@
 @synthesize defines = _defines, libs = _libs, libDirs = _libDirs;
 @synthesize conditionals = _conditionals;
 
-- (void)populateFromDictionary: (OFDictionary*)info
+- (void)populateFromDictionary: (OFDictionary *)info
 {
 	id tmp;
 
@@ -28,7 +28,7 @@
 #undef KEEP_IF_KIND_IS
 }
 
-- (void)inheritBuildinfo: (Buildinfo*)info
+- (void)inheritBuildinfo: (Buildinfo *)info
 {
 	id tmp;
 
@@ -45,7 +45,7 @@
 
 	_debug |= [info debug];
 
-	if ((tmp = [info objC]) != nil) {
+	if ((tmp = info.objC) != nil) {
 		[_objC release];
 		_objC = [tmp copy];
 	}

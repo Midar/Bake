@@ -5,7 +5,7 @@
 #import "MissingDependencyException.h"
 
 @implementation DependencySolver
-- init
+- (instancetype)init
 {
 	self = [super init];
 
@@ -28,38 +28,37 @@
 	[super dealloc];
 }
 
-- (void)addTarget: (Target*)target
+- (void)addTarget: (Target *)target
 {
 	void *pool = objc_autoreleasePoolPush();
 	DependencyNode *node;
 
 	node = [[[DependencyNode alloc] initWithTarget: target] autorelease];
 
-	[_nodes setObject: node
-		   forKey: [target name]];
+	[_nodes setObject: node forKey: target.name];
 
 	objc_autoreleasePoolPop(pool);
 }
 
-- (void)solveDependenciesForNode: (DependencyNode*)node
+- (void)solveDependenciesForNode: (DependencyNode *)node
 {
 	void *pool = objc_autoreleasePoolPush();
 
 	[node visit];
 
-	for (OFString *dependencyName in [[node target] dependencies]) {
+	for (OFString *dependencyName in node.target.dependencies) {
 		DependencyNode *dependency;
 
 		if ((dependency = [_nodes objectForKey: dependencyName]) == nil)
 			@throw [MissingDependencyException
 			    exceptionWithDependencyName: dependencyName];
 
-		if (![dependency isInTargetOrder])
+		if (!dependency.inTargetOrder)
 			[self solveDependenciesForNode: dependency];
 	}
 
-	[_targetOrder addObject: [node target]];
-	[node setInTargetOrder: true];
+	[_targetOrder addObject: node.target];
+	node.inTargetOrder = true;
 
 	objc_autoreleasePoolPop(pool);
 }
@@ -69,13 +68,13 @@
 	void *pool = objc_autoreleasePoolPush();
 
 	for (DependencyNode *node in _nodes)
-		if (![node isInTargetOrder])
+		if (!node.inTargetOrder)
 			[self solveDependenciesForNode: node];
 
 	objc_autoreleasePoolPop(pool);
 }
 
-- (OFArray*)targetOrder
+- (OFArray *)targetOrder
 {
 	return [[_targetOrder copy] autorelease];
 }

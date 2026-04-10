@@ -5,7 +5,7 @@
 @implementation DependencyNode
 @synthesize target = _target, inTargetOrder = _inTargetOrder;
 
-- initWithTarget: (Target*)target
+- (instancetype)initWithTarget: (Target *)target
 {
 	self = [super init];
 
