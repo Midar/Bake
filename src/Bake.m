@@ -71,8 +71,9 @@ OF_APPLICATION_DELEGATE(Bake)
 
 	dependencySolver = [[[DependencySolver alloc] init] autorelease];
 
-	for (Target *target in _recipe.targets)
-		[dependencySolver addTarget: target];
+	for (OFString *targetName in _recipe.targets)
+		[dependencySolver addTarget:
+		    [_recipe.targets objectForKey: targetName]];
 
 	@try {
 		[dependencySolver solve];

@@ -67,9 +67,12 @@
 {
 	void *pool = objc_autoreleasePoolPush();
 
-	for (DependencyNode *node in _nodes)
+	for (OFString *nodeName in _nodes) {
+		DependencyNode *node = [_nodes objectForKey: nodeName];
+
 		if (!node.inTargetOrder)
 			[self solveDependenciesForNode: node];
+	}
 
 	objc_autoreleasePoolPop(pool);
 }
